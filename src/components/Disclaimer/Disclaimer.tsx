@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Disclaimer() {
     return (
-<span className="text-sm text-white">
+        <span className="text-sm text-white">
           This site is not affiliated with{" "}
           <Link href="https://mountaintop.gg/" rel="noopener noreferrer" target="_blank">Mountaintop Studios</Link>.
           All imagery and data is owned by{" "}
