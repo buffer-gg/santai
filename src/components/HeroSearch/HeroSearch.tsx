@@ -31,9 +31,9 @@ export default function HeroSearch() {
     // ]
 
     const options = [
-        { value: 'apple', label: 'Apple' },
-        { value: 'banana', label: 'Banana' },
-        { value: 'cherry', label: 'Cherry' },
+        { value: 'truo', label: 'truo' },
+        { value: 'qkz', label: 'qkz' },
+        { value: 'limit', label: 'LIMIT' },
       ];
     
     //   const placeholders = [
