@@ -123,11 +123,11 @@ const CommunityProgress = ({ eventData }: Props) => {
         )}
       </span>
 
-      <ProgressBar
+      {/* <ProgressBar
         showAnimation
         color="red"
         value={(data.current / data.goal) * 100}
-      />
+      /> */}
     </div>
   );
 };
