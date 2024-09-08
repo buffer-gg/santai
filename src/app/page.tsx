@@ -40,7 +40,6 @@ export default function Home() {
           </div>
           <HeroSearch/>
           <div className="w-fit z-[1] flex items-center">
-            <LeaderboardPreviewTrio />
           </div>
         </div>
       </section>
