@@ -1,7 +1,7 @@
 "use client"
 
-import { BarChart } from "@tremor/react";
-import type { RANK_TYPES, BaseUser } from "@/types";
+// import { BarChart } from "@tremor/react";
+import type { RANK_TYPES, BaseUser } from "@/app/types";
 import leagues from "@/utils/leagues";
 import getRankTypeName from "@/utils/getPlatformName";
 import { type LeaderboardId, leaderboards } from "@/utils/leaderboards";
