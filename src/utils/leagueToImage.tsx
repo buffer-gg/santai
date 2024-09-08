@@ -1,7 +1,6 @@
 import Image from "next/image";
 
 export default (rank: string, height?: number) => {
-
   return (
     <Image
       className="inline"
