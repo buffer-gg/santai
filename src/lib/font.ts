@@ -28,6 +28,17 @@ export const dharma = localFont({
   variable: "--font-dharma-gothic-e",
 });
 
+export const projectkosmos = localFont({
+  src: [
+    {
+      path: "../../public/fonts/PlanetKosmos/planetkosmos.ttf",
+      style: "normal",
+      weight: "400"
+    }
+  ],
+  variable: "--font-planetkosmos"
+})
+
 export const inter = Inter({
   subsets: ["latin"],
   display: "swap",

@@ -1,5 +1,9 @@
+"use client"
+
+import "../index.css";
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ColumnDef } from "@tanstack/react-table";
 import {
   BarChartIcon,
   Loader2Icon,
@@ -7,118 +11,129 @@ import {
   TableIcon,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import CommunityProgress from "./components/CommunityProgress";
-import { DataTable } from "./components/DataTable";
-import { columns } from "./components/TableColumns";
-import { Button } from "./components/ui/button";
+import Notice from "@/components/Notice";
+import CommunityProgress from "@/components/CommunityProgress";
+import { DataTable } from "@/components/DataTable";
+import { columns } from "@/components/TableColumns";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Stats from "./components/Stats";
-import ThemeToggle from "./components/ThemeToggle";
-import Icons from "./components/icons";
-import Link from "./components/Link";
-import { cn } from "./lib/utils";
-import { Panels, Platforms } from "./types";
-import { fetchData } from "./utils/fetchData";
-import { communityEvents } from "./utils/communityEvents";
+import Stats from "@/components/Stats";
+import ThemeToggle from "@/components/ThemeToggle";
+import Icons from "@/components/icons";
+import Link from "@/components/Link";
+import { cn } from "@/lib/utils";
+import { Panels, RANK_TYPES } from "@/app/types";
+import { fetchData } from "@/utils/fetchData";
+import { communityEvents } from "@/utils/communityEvents";
 import {
-  Leaderboard,
-  LeaderboardId,
+  type Leaderboard,
+  type LeaderboardId,
   defaultLeaderboardId,
   leaderboardIdsToPrefetch,
   leaderboards,
   leaderboardsGroupedByTabGroup,
-} from "./utils/leaderboards";
-import { ColumnDef } from "@tanstack/react-table";
+} from "@/utils/leaderboards";
 
-export default function Leaderboards() {
-  const searchParams = new URLSearchParams(window.location.search);
-  const leaderboardSearchParam = searchParams.get("leaderboard");
-  const platformSearchParam = searchParams.get("platform");
-  const panelSearchParam = searchParams.get("panel");
+const LeaderboardComponent = () => {
+  const [searchParams, setSearchParams] = useState<URLSearchParams | null>(null);
 
-  // Set the initial leaderboard version to the query param if:
-  // - The query param is set
-  // - The query param is a valid leaderboard version
-  // - The leaderboard version is enabled
-  // Otherwise, use the default leaderboard version
-  const initialLeaderboardVersion =
-    leaderboardSearchParam &&
-    Object.keys(leaderboards).includes(
-      leaderboardSearchParam as LeaderboardId,
-    ) &&
-    leaderboards[leaderboardSearchParam as LeaderboardId].enabled
-      ? leaderboardSearchParam
-      : defaultLeaderboardId;
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setSearchParams(new URLSearchParams(window.location.search));
+    }
+  }, []);
 
-  // Set the initial platform to the query param if:
-  // - The query param is set
-  // - The query param is a valid platform
-  // Otherwise, use the default platform (Crossplay)
-  const initialPlatform =
-    platformSearchParam &&
-    Object.values(Platforms).includes(platformSearchParam as Platforms)
-      ? platformSearchParam
-      : Platforms.Crossplay;
+  // Initialize state variables with default values
+  const [selectedLeaderboardVersion, setSelectedLeaderboardVersion] = useState<LeaderboardId>(defaultLeaderboardId);
+  const [selectedRankType, setSelectedRankType] = useState<RANK_TYPES>(RANK_TYPES.SOLO);
+  const [selectedPanel, setSelectedPanel] = useState<Panels>(Panels.Table);
 
-  const [selectedLeaderboardVersion, setSelectedLeaderboardVersion] =
-    useState<LeaderboardId>(initialLeaderboardVersion as LeaderboardId);
+  useEffect(() => {
+    if (searchParams) {
+      const leaderboardSearchParam = searchParams.get("leaderboard");
+      const rankTypeSearchParam = searchParams.get("rankType");
+      const panelSearchParam = searchParams.get("panel");
 
-  // Set the initial panel to the query param if:
-  // - The query param is set
-  // - The query param is a valid panel
-  // - The Stats panel is not disabled
-  // Otherwise, use the default panel (Table)
-  const initialPanel =
-    panelSearchParam &&
-    Object.values(Panels).includes(panelSearchParam as Panels) &&
-    !leaderboards[selectedLeaderboardVersion].disableStatsPanel
-      ? panelSearchParam
-      : Panels.Table;
+      // Set the initial leaderboard version to the query param if:
+      // - The query param is set
+      // - The query param is a valid leaderboard version
+      // - The leaderboard version is enabled
+      // Otherwise, use the default leaderboard version
+      const initialLeaderboardVersion =
+        leaderboardSearchParam &&
+        Object.keys(leaderboards).includes(
+          leaderboardSearchParam as LeaderboardId,
+        ) &&
+        leaderboards[leaderboardSearchParam as LeaderboardId].enabled
+          ? leaderboardSearchParam
+          : defaultLeaderboardId;
 
-  const [selectedPlatform, setSelectedPlatform] = useState<Platforms>(
-    initialPlatform as Platforms,
-  );
+      setSelectedLeaderboardVersion(initialLeaderboardVersion as LeaderboardId);
 
-  const [selectedPanel, setSelectedPanel] = useState<Panels>(
-    initialPanel as Panels,
-  );
+      // Set the initial Rank-Type to the query param if:
+      // - The query param is set
+      // - The query param is a valid Rank-Type
+      // Otherwise, use the default Rank-Type (SOLO)
+      const initialRankType =
+        rankTypeSearchParam &&
+        Object.values(RANK_TYPES).includes(rankTypeSearchParam as RANK_TYPES)
+          ? rankTypeSearchParam
+          : RANK_TYPES.SOLO;
+
+      setSelectedRankType(initialRankType as RANK_TYPES);
+
+      // Set the initial panel to the query param if:
+      // - The query param is set
+      // - The query param is a valid panel
+      // - The Stats panel is not disabled
+      // Otherwise, use the default panel (Table)
+      const initialPanel =
+        panelSearchParam &&
+        Object.values(Panels).includes(panelSearchParam as Panels) &&
+        !leaderboards[initialLeaderboardVersion as LeaderboardId].disableStatsPanel
+          ? panelSearchParam
+          : Panels.Table;
+
+      setSelectedPanel(initialPanel as Panels);
+    }
+  }, [searchParams]);
 
   const queryClient = useQueryClient();
 
   // Use TanStack Query to fetch data
-  // This will cache all cpmbinations of leaderboard version and platform infinitely
+  // This will cache all combinations of leaderboard version and rank-type infinitely
   // Or until the page is refreshed or the cache is invalidated (refresh button is pressed)
   const { isLoading, data, isError, dataUpdatedAt, isRefetching } = useQuery({
-    queryKey: ["leaderboard", selectedLeaderboardVersion, selectedPlatform],
-    queryFn: () => fetchData(selectedLeaderboardVersion, selectedPlatform),
+    queryKey: ["leaderboard", selectedLeaderboardVersion, selectedRankType],
+    queryFn: () => fetchData(selectedLeaderboardVersion, selectedRankType),
     staleTime: Infinity, // Cache the data until the page is refreshed
   });
 
-  // Prefetch data for the other leaderboard version and platform
+  // Prefetch data for the other leaderboard version and rank-type
   // User when hovering over the tabs
   // Defaults to the current selected values in state, but can be overridden
   const prefetchData = ({
     leaderboard,
-    platform,
+    rankType,
   }: {
     leaderboard?: LeaderboardId;
-    platform?: Platforms;
+    rankType?: RANK_TYPES;
   }) => {
     queryClient.prefetchQuery({
       queryKey: [
         "leaderboard",
         leaderboard ?? selectedLeaderboardVersion,
-        platform ?? selectedPlatform,
+        rankType ?? selectedRankType,
       ],
       queryFn: () =>
         fetchData(
           leaderboard ?? selectedLeaderboardVersion,
-          platform ?? selectedPlatform,
+          rankType ?? selectedRankType,
         ),
       staleTime: Infinity,
     });
@@ -131,7 +146,7 @@ export default function Leaderboards() {
     );
   }, []);
 
-  // Store selected leaderboard version and platform in URL
+  // Store selected leaderboard version and rank-type in URL
   // Perhaps not the best way to do it, but it works
   // Remove the query param if it's the default values
   useEffect(() => {
@@ -141,9 +156,9 @@ export default function Leaderboards() {
       ? searchParams.delete("leaderboard")
       : searchParams.set("leaderboard", selectedLeaderboardVersion);
 
-    selectedPlatform === Platforms.Crossplay
-      ? searchParams.delete("platform")
-      : searchParams.set("platform", selectedPlatform);
+    selectedRankType === RANK_TYPES.SOLO
+      ? searchParams.delete("rankType")
+      : searchParams.set("rankType", selectedRankType);
 
     selectedPanel === Panels.Table
       ? searchParams.delete("panel")
@@ -152,9 +167,9 @@ export default function Leaderboards() {
     window.history.replaceState(
       null,
       "",
-      searchParams.size > 0 ? `?${searchParams.toString()}` : "/",
+      searchParams.size > 0 ? `?${searchParams.toString()}` : "/leaderboard",
     );
-  }, [selectedLeaderboardVersion, selectedPlatform, selectedPanel]);
+  }, [selectedLeaderboardVersion, selectedRankType, selectedPanel]);
 
   const updateSelectedLeaderboard = (leaderboard: LeaderboardId) => {
     // Switch to Table panel if the Stats panel is disabled
@@ -170,15 +185,11 @@ export default function Leaderboards() {
   const disabled = isLoading || isRefetching;
 
   return (
-    <div className="container mb-12 mt-2 font-saira max-sm:px-2">
-      <h1 className="text-2xl font-medium sm:text-3xl">
-        Enhanced Leaderboard – THE FINALS
-      </h1>
-
+    <div className="container mb-12 mt-12 font-saira  mr-0 max-sm:px-2 lg::mt-2 ml-0 lg:ml-12 flex flex-col">
       <h5>
-        Select a leaderboard and platform to view the current standings.{" "}
-        <button
-          id="share-button"
+        {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+        {/* <button
+        id="share-button"
           title="Copy link to clipboard"
           className="w-40 text-left font-semibold hover:underline"
           onClick={() => {
@@ -209,44 +220,18 @@ export default function Leaderboards() {
           }}
         >
           Share this website!
-        </button>
+        </button> */}
+        Solo Leaderboard
       </h5>
 
-      {/* Notice */}
-      {/* <Notice
-        icon={<AlertCircleIcon />}
-        message={
-          <span>
-            Season 3 support is here! Check out the{" "}
-            <button
-              className="font-medium hover:underline"
-              onClick={() => updateSelectedLeaderboard("season3WorldTour")}
-              onPointerEnter={() =>
-                prefetchData({ leaderboard: "season3WorldTour" })
-              }
-            >
-              World Tour
-            </button>{" "}
-            or{" "}
-            <button
-              className="font-medium hover:underline"
-              onClick={() => updateSelectedLeaderboard("season3")}
-              onPointerEnter={() => prefetchData({ leaderboard: "season3" })}
-            >
-              Ranked
-            </button>
-            .
-          </span>
-        }
-      /> */}
 
-      <div className="my-2">
+      {/* <div className="my-2">
         <CommunityProgress
           eventData={Object.values(communityEvents).find(x => x.active)}
         />
-      </div>
+      </div> */}
 
-      <div className="my-4 flex flex-col gap-5">
+      <div className="my-4 flex flex-col gap-5 w-full">
         <div className="flex flex-wrap gap-2">
           <div className="block w-full min-[600px]:hidden">
             Leaderboard:{" "}
@@ -291,41 +276,38 @@ export default function Leaderboards() {
           {/* LEADERBOARD PLATFORM */}
           <Tabs
             className="select-none"
-            defaultValue={selectedPlatform}
-            onValueChange={e => setSelectedPlatform(e as Platforms)}
+            defaultValue={selectedRankType}
+            onValueChange={e => setSelectedRankType(e as RANK_TYPES)}
           >
             <TabsList>
               {[
                 {
-                  leaderboardPlatform: Platforms.Crossplay,
-                  title: "Crossplay",
-                  icon: <Icons.crossplay className="inline size-5" />,
+                  leaderboardRankType: RANK_TYPES.SOLO,
+                  title: "Solo",
+                  icon: <Icons.solo className="inline size-5" />,
                 },
                 {
-                  leaderboardPlatform: Platforms.Steam,
-                  title: "Steam",
-                  icon: <Icons.steam className="inline size-5" />,
+                  leaderboardRankType: RANK_TYPES.TEAM,
+                  title: "Team",
+                  icon: <Icons.team className="inline size-5" />,
+                  disabled: true
                 },
                 {
-                  leaderboardPlatform: Platforms.Xbox,
-                  title: "Xbox",
-                  icon: <Icons.xbox className="inline size-5" />,
+                  leaderboardRankType: RANK_TYPES.CREW,
+                  title: "Crew",
+                  icon: <Icons.crew className="inline size-5" />,
+                  disabled: true
                 },
-                {
-                  leaderboardPlatform: Platforms.PSN,
-                  title: "PlayStation",
-                  icon: <Icons.playstation className="inline size-5" />,
-                },
-              ].map(({ leaderboardPlatform: value, icon }) => (
+              ].map(({ leaderboardRankType: value, icon, disabled }) => (
                 <TabsTrigger
                   key={value}
                   value={value}
                   disabled={
                     disabled ||
                     leaderboards[selectedLeaderboardVersion]
-                      .disablePlatformSelection
+                      .disableRankTypeSelection
                   }
-                  onPointerEnter={() => prefetchData({ platform: value })}
+                  onPointerEnter={() => prefetchData({ rankType: value })}
                 >
                   {icon}
                 </TabsTrigger>
@@ -348,13 +330,13 @@ export default function Leaderboards() {
                     )
                   }
                 >
-                  <span className="mr-2 hidden min-[600px]:block">Refresh</span>
+                  <span className="mr-4 hidden min-[600px]:block">Refresh</span>
 
                   <RefreshCwIcon
                     className={cn(
                       "size-4",
                       (isLoading || isRefetching) && "animate-spin",
-                    )}
+                    "block")}
                   />
                 </Button>
               </TooltipTrigger>
@@ -363,25 +345,25 @@ export default function Leaderboards() {
           </TooltipProvider>
         </div>
 
-        {isError && (
+        {/* {isError && (
           <span className="text-lg">
             Error gathering data. Please{" "}
-            <Link href="https://x.com/mozzyfx">
+            <Link href="https://x.com/LIMIT_IO">
               contact the developer on Twitter
             </Link>{" "}
             or{" "}
-            <Link href="https://github.com/leonlarsson/the-finals-leaderboard/issues/new?title=Error gathering data">
+            <Link href="https://discord.gg/CsYUxDj6k6">
               {" "}
-              file an issue on GitHub
+              file an issue on Discord
             </Link>{" "}
             if this error persists.
           </span>
-        )}
+        )} */}
 
         {/* Panel selector and panels */}
         {!isError && (
           <div className="space-y-3">
-            <Tabs
+            {/* <Tabs
               className="select-none"
               value={selectedPanel}
               onValueChange={v => setSelectedPanel(v as Panels)}
@@ -407,7 +389,7 @@ export default function Leaderboards() {
                   Stats
                 </TabsTrigger>
               </TabsList>
-            </Tabs>
+            </Tabs> */}
 
             {selectedPanel === Panels.Table && (
               <DataTable
@@ -418,7 +400,7 @@ export default function Leaderboards() {
                 columns={(
                   columns(
                     selectedLeaderboardVersion,
-                    selectedPlatform,
+                    selectedRankType,
                   ) as ColumnDef<unknown>[]
                 ).filter(col =>
                   leaderboards[
@@ -430,52 +412,20 @@ export default function Leaderboards() {
               />
             )}
 
-            {selectedPanel === Panels.Stats && (
+            {/* {selectedPanel === Panels.Stats && (
               <Stats
                 leaderboardVersion={selectedLeaderboardVersion}
-                platform={selectedPlatform}
+                platform={selectedRankType}
                 users={data ?? []}
               />
-            )}
+            )} */}
           </div>
         )}
       </div>
 
-      <div className="mt-10 flex flex-col gap-2">
-        <span>
-          Current data updated at{" "}
-          {isLoading || isRefetching ? (
-            <Loader2Icon className="inline size-5 animate-spin" />
-          ) : (
-            new Date(dataUpdatedAt).toLocaleString()
-          )}
-        </span>
-
-        <span className="text-sm">
-          This site is not affiliated with{" "}
-          <Link href="https://www.embark-studios.com/">Embark Studios</Link>.
-          All imagery and data is owned by{" "}
-          <Link href="https://www.embark-studios.com/">Embark Studios</Link>.
-          Created by <Link href="https://twitter.com/mozzyfx">Mozzy</Link>.
-          Check out the{" "}
-          <Link href="https://github.com/leonlarsson/the-finals-api">API</Link>.
-        </span>
-
-        <div className="flex gap-2">
-          <ThemeToggle />
-          <Link href="https://x.com/mozzyfx">
-            <Button variant="outline" size="icon">
-              <Icons.xTwitter className="size-5" />
-            </Button>
-          </Link>
-
-          <Link href="https://github.com/leonlarsson/the-finals-leaderboard">
-            <Button variant="outline" size="icon">
-              <Icons.github className="size-5" />
-            </Button>
-          </Link>
-        </div>
-      </div>
+      
     </div>
   );
 };
+
+export default LeaderboardComponent;
