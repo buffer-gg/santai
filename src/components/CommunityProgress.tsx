@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query";
-import { ProgressBar } from "@tremor/react";
+// import { ProgressBar } from "@tremor/react";
 import type { CommunityEvent } from "@/utils/communityEvents";
 
 type Props = {
