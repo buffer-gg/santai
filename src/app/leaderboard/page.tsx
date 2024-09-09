@@ -8,6 +8,7 @@ export default function Leaderboard() {
                     This site is <b>not</b> affiliated with <b>Mountaintop Studios</b> and all
                     associated properties “Spectre Divide” are trademarks or registered
                     trademarks of <b>Mountaintop Studios</b>.
+                    Message me on Discord at <b>limitedio</b> if you have any questions or concerns.
                 </p>
         </div>
 
