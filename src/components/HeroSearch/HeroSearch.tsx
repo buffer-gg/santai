@@ -31,9 +31,9 @@ export default function HeroSearch() {
     // ]
 
     const options = [
-        { value: 'truo', label: 'truo' },
-        { value: 'qkz', label: 'qkz' },
-        { value: 'limit', label: 'LIMIT' },
+        { value: 'truo', label: 'Search Currently Disabled' },
+        { value: 'qkz', label: 'Search Currently Disabled' },
+        { value: 'limit', label: 'Search Currently Disabled' },
       ];
     
     //   const placeholders = [
@@ -51,7 +51,7 @@ export default function HeroSearch() {
                 onSubmit={onSubmit}
                 placeholderChangeTime={4000}
             /> */}
-            <AnimatedAutoComplete options={options} placeholders={placeholders} emptyMessage="idk" onValueChange={(selectedOption) => console.log('Selected:', selectedOption)}
+            <AnimatedAutoComplete options={options} placeholders={placeholders} emptyMessage="Search Currently Disabled..." onValueChange={(selectedOption) => console.log('Selected:', selectedOption)}
       onSubmit={(e) => {
         e.preventDefault();
         console.log('Form submitted');
