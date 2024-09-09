@@ -332,12 +332,14 @@ const LeaderboardComponent = () => {
                 >
                   <span className="mr-4 hidden min-[600px]:block">Refresh</span>
 
-                  <RefreshCwIcon
-                    className={cn(
-                      "size-4",
-                      (isLoading || isRefetching) && "animate-spin",
-                    "block")}
-                  />
+                  <div className="flex items-center min-[600px]:pr-2">
+                    <RefreshCwIcon
+                      className={cn(
+                        "size-4",
+                        (isLoading || isRefetching) && "animate-spin",
+                      "block")}
+                    />
+                  </div>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Refresh data.</TooltipContent>

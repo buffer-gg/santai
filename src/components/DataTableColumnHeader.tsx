@@ -34,17 +34,23 @@ export function DataTableColumnHeader<TData, TValue>({
           <TooltipTrigger asChild className="w-fit">
             <Button
               variant="ghost"
-              size="sm"
-              className="-ml-3 h-8 data-[state=open]:bg-accent"
+              size="icon"
+              className="h-8 data-[state=open]:bg-accent w-full flex justify-center"
               onClick={() => column.toggleSorting()}
             >
-              <span>{title}</span>
+              <p>{title}</p>
               {column.getIsSorted() === "asc" ? (
-                <SortAscIcon className="ml-2 size-4" />
+                <div className="flex">
+                  <SortAscIcon className="ml-2 size-4" />
+                </div>
               ) : column.getIsSorted() === "desc" ? (
-                <SortDescIcon className="ml-2 size-4" />
+                <div className="flex items-center">
+                  <SortDescIcon className="ml-2 size-4" />
+                </div>
               ) : (
-                <MenuIcon className="ml-2 size-4" />
+                <div className="flex items-center">
+                  <MenuIcon className="ml-2 size-4" />
+                </div>
               )}
             </Button>
           </TooltipTrigger>
