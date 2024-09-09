@@ -32,8 +32,6 @@ export default function HeroSearch() {
 
     const options = [
         { value: 'truo', label: 'Search Currently Disabled' },
-        { value: 'qkz', label: 'Search Currently Disabled' },
-        { value: 'limit', label: 'Search Currently Disabled' },
       ];
     
     //   const placeholders = [
