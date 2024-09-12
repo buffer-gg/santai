@@ -7,7 +7,7 @@ export default (rank: string, height?: number) => {
       title={`${rank}`}
       width={height ?? 60}
       alt={`${rank}`}
-      src={`/${rank.toLowerCase().replace(" ", "-")}.png`}
+      src={`/Ranks/Solo/${rank.toLowerCase().replace(" ", "-")}.png`}
       height={height ?? 60}
     />
   );
