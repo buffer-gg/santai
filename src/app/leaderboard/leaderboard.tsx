@@ -221,7 +221,7 @@ const LeaderboardComponent = () => {
         >
           Share this website!
         </button> */}
-        Solo Leaderboard
+        Solo Leaderboard - Undergoing Maintenance (V2 Update Soon)
       </h5>
 
 
