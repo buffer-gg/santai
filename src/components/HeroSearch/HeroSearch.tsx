@@ -10,7 +10,9 @@ export default function HeroSearch() {
         "Search for a player, a crew, or a team...",
         "truo",
         "Unavoidable Assembly",
-        "Qkz"
+        "Qkz",
+        "Confidential Clique",
+        "Detailed"
     ]
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
