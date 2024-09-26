@@ -16,7 +16,11 @@ export default {
 
 			fontFamily: {
 				planetkosmos: "planetkosmos",
-			}
+			},
+
+			skew: {
+				30: "30deg" 
+			},
 		},
 	},
 	plugins: [],

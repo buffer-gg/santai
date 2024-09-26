@@ -3,7 +3,18 @@
   export let className: string;
 </script>
 
-<div class={cn("flex flex-row w-full max-w-96 overflow-clip rounded-full bg-white", className)}>
-  <div class="p-2">Search...</div>
-  <div class="h-full w-24 ml-auto bg-accent"></div>
+<div class="flex flew-row w-full gap-1 -skew-x-30">
+  <div class={cn("w-full max-w-96 py-2 px-6 overflow-clip [&>*]:skew-x-30 rounded-l-md rounded-br-lg bg-white", className)}><div>Search...</div></div>
+  <button class="flex w-24 rounded-r-md rounded-tl-lg bg-accent [&>*]:skew-x-30">
+    <svg class="m-auto" width="24px" height="24px" viewBox="0 0 24 24" stroke-width="2.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+      <path d="M4 17 1 20" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+      <path
+        d="M3 11C3 15.4183 6.58172 19 11 19C13.213 19 15.2161 18.1015 16.6644 16.6493C18.1077 15.2022 19 13.2053 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11Z"
+        stroke="#000000"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      ></path>
+    </svg>
+  </button>
 </div>
