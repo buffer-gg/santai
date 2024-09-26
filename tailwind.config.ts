@@ -12,6 +12,10 @@ export default {
 				},
 
 				accent: "hsl(var(--accent) / <alpha-value>)"
+			},
+
+			fontFamily: {
+				planetkosmos: "planetkosmos",
 			}
 		},
 	},
