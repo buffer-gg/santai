@@ -10,9 +10,10 @@ interface Props {
   style?: string;
   pageTitle: string;
   pageDescription?: string;
+  hiddenNavbar?: boolean;
 }
 
-const { class: className, style, pageTitle, pageDescription = "Spectre Divide community hub, leaderboard, and more." } = Astro.props;
+const { class: className, style, pageTitle, hiddenNavbar = false, pageDescription = "Spectre Divide community hub, leaderboard, and more." } = Astro.props;
 ---
 
 <!doctype html>
@@ -28,7 +29,7 @@ const { class: className, style, pageTitle, pageDescription = "Spectre Divide co
     <ViewTransitions />
   </head>
   <body class={cn("min-h-lvh bg-dark-0", className)} style={style}>
-    <Navbar />
+    <Navbar hidden={hiddenNavbar} />
     <slot />
     <Footer />
   </body>
