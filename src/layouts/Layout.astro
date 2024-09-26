@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import { ViewTransitions } from "astro:transitions";
 import Navbar from "../components/navigation/Navbar.astro";
+import { cn } from "../utils/cn";
 
 interface Props {
   class?: string;
@@ -10,7 +11,7 @@ interface Props {
   pageDescription?: string;
 }
 
-const { class: className, style, pageTitle, pageDescription = "DEFAULT DESCRIPTION" } = Astro.props;
+const { class: className, style, pageTitle, pageDescription = "Spectre Divide community hub, leaderboard, and more." } = Astro.props;
 ---
 
 <!doctype html>
@@ -25,7 +26,7 @@ const { class: className, style, pageTitle, pageDescription = "DEFAULT DESCRIPTI
     <title>{pageTitle}</title>
     <ViewTransitions />
   </head>
-  <body class={"min-h-lvh bg-dark-0 " + className} style={style}>
+  <body class={cn("min-h-lvh bg-dark-0", className)} style={style}>
     <Navbar />
     <slot />
   </body>
