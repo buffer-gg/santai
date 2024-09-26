@@ -1,0 +1,14 @@
+---
+interface Props {
+  hidden?: boolean;
+}
+
+const { hidden = true } = Astro.props;
+---
+
+{
+    !hidden &&
+    <div>
+asdas
+    </div>
+}
