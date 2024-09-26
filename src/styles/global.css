@@ -9,6 +9,14 @@
     --dark-2: 220 10% 20%;
 
     --accent: 26 98% 52%;
+
+    --radius-small: 0.1rem;
+    --radius-base: 0.3rem;
+    --radius-large: 0.8rem;
+
+    --spacing-small: 0.2rem;
+    --spacing-base: 0.5rem;
+    --spacing-large: 1.5rem;
   }
 
   @font-face {

@@ -21,6 +21,18 @@ export default {
 			skew: {
 				30: "30deg" 
 			},
+
+			borderRadius: {
+				small: "var(--radius-small)",
+				base: "var(--radius-base)",
+				large: "var(--radius-large)"
+			},
+
+			spacing: {
+				small: "var(--spacing-small)",
+				base: "var(--spacing-base)",
+				large: "var(--spacing-large)"
+			}
 		},
 	},
 	plugins: [],
