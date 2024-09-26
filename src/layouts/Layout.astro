@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import siteInformation from "../information/SiteInformation.json";
 import { ViewTransitions } from "astro:transitions";
 import Navbar from "../components/navigation/Navbar.astro";
 import Footer from "../components/navigation/Footer.astro";
@@ -13,7 +14,7 @@ interface Props {
   hiddenNavbar?: boolean;
 }
 
-const { class: className, style, pageTitle, hiddenNavbar = false, pageDescription = "Spectre Divide community hub, leaderboard, and more." } = Astro.props;
+const { class: className, style, pageTitle, hiddenNavbar = false, pageDescription = siteInformation.siteDescription } = Astro.props;
 ---
 
 <!doctype html>
