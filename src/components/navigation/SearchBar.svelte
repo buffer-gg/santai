@@ -4,8 +4,8 @@
 </script>
 
 <div class="flex flew-row w-full gap-1 -skew-x-30">
-  <div class={cn("w-full max-w-96 py-2 px-6 overflow-clip [&>*]:skew-x-30 rounded-l-md rounded-br-lg bg-white", className)}><div>Search...</div></div>
-  <button class="flex w-24 rounded-r-md rounded-tl-lg bg-accent [&>*]:skew-x-30">
+  <div class={cn("w-full max-w-96 py-2 px-6 overflow-clip [&>*]:skew-x-30 rounded-md rounded-br-xl bg-white", className)}><div>Search...</div></div>
+  <button class="flex w-32 rounded-md rounded-tl-xl bg-accent [&>*]:skew-x-30">
     <svg class="m-auto" width="24px" height="24px" viewBox="0 0 24 24" stroke-width="2.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
       <path d="M4 17 1 20" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
       <path
