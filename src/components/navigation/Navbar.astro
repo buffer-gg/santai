@@ -1,4 +1,6 @@
 ---
+import Logo from '../Logo.astro';
+
 interface Props {
   hidden?: boolean;
 }
@@ -8,7 +10,8 @@ const { hidden = false } = Astro.props;
 
 {
     !hidden &&
-    <div class="fixed top-0 w-full h-12 bg-dark-1">
-
+    <div class="mb-12"></div>
+    <div class="fixed top-0 w-full px-large py-base bg-dark-0">
+      <Logo />
     </div>
 }

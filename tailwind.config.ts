@@ -22,7 +22,8 @@ export default {
 			},
 
 			fontFamily: {
-				planetkosmos: "planetkosmos",
+				planetkosmos: "Planet Kosmos",
+				dharmagothic: "Dharma Gothic",
 			},
 
 			skew: {

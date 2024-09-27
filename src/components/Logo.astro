@@ -1,0 +1,11 @@
+---
+import { cn } from '../utils/cn';
+
+interface Props {
+    class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<a href="/" class={cn("mx-auto select-none tracking-wider font-planetkosmos text-light-1 hover:text-light-2", className)}>santai.gg</a>
