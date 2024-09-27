@@ -1,7 +1,16 @@
 ---
 import siteInformation from "../../information/SiteInformation.json";
+
+interface Props {
+  hidden?: boolean;
+}
+
+const { hidden = false } = Astro.props;
 ---
 
-<footer class="absolute bottom-0 w-full p-4 text-center bg-dark-1 text-gray-500">
-  {siteInformation.affiliateNotice}
-</footer>
+{
+    !hidden &&
+    <footer class="absolute bottom-0 w-full p-4 text-center bg-dark-1 text-gray-500">
+      {siteInformation.affiliateNotice}
+    </footer>
+}

@@ -12,9 +12,10 @@ interface Props {
   pageTitle: string;
   pageDescription?: string;
   hiddenNavbar?: boolean;
+  hiddenFooter?: boolean;
 }
 
-const { class: className, style, pageTitle, hiddenNavbar = false, pageDescription = siteInformation.siteDescription } = Astro.props;
+const { class: className, style, pageTitle, hiddenNavbar = false, hiddenFooter = false, pageDescription = siteInformation.siteDescription } = Astro.props;
 ---
 
 <!doctype html>
@@ -32,6 +33,6 @@ const { class: className, style, pageTitle, hiddenNavbar = false, pageDescriptio
   <body class={cn("bg-dark-0", className)} style={style}>
     <Navbar hidden={hiddenNavbar} />
     <slot />
-    <Footer />
+    <Footer hidden={hiddenFooter} />
   </body>
 </html>
