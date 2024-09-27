@@ -17,8 +17,10 @@ export default {
 					0: "hsl(var(--light-0) / <alpha-value>)",
 					1: "hsl(var(--light-1) / <alpha-value>)",
 					2: "hsl(var(--light-2) / <alpha-value>)",
-				}
+				},
 
+				warning: "hsl(var(--warning) / <alpha-value>)",
+				destructive: "hsl(var(--destructive) / <alpha-value>)",
 			},
 
 			fontFamily: {

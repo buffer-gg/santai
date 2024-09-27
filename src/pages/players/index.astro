@@ -2,14 +2,21 @@
 import BackgroundImage from "../../components/cosmetic/BackgroundImage.astro";
 import Constrict from "../../components/blocks/Constrict.astro";
 import Layout from "../../layouts/Layout.astro";
+import Note, { InfoType } from "../../components/information/Note.astro";
 ---
 
 <Layout pageTitle="Santai.gg | Leaderboard">
   <main>
     <BackgroundImage imagePath="/src/assets/background-01.png" altText="Spectre Divide - players clearing site." class="brightness-125" />
 
-    <Constrict class="mt-large mx-large">
-      <h1 class="text-6xl text-light-2 font-dharmagothic">Player Leaderboard</h1>
+    <Constrict class="mt-large mx-large gap-base">
+      <div class="flex flex-col-reverse md:flex-row">
+        <div>
+          <h2 class="ml-base text-4xl text-light-1 font-dharmagothic italic">PLAYER</h2>
+          <h1 class="text-6xl text-light-2 font-dharmagothic italic">LEADERBOARD</h1>
+        </div>
+        <Note type={InfoType.Normal} body="Santai.gg v2 is work in progress."class="md:ml-auto" />
+      </div>  
     </Constrict>
   </main>
 </Layout>
