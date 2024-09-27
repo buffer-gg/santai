@@ -11,7 +11,14 @@ export default {
 					2: "hsl(var(--dark-2) / <alpha-value>)",
 				},
 
-				accent: "hsl(var(--accent) / <alpha-value>)"
+				accent: "hsl(var(--accent) / <alpha-value>)",
+
+				light: {
+					0: "hsl(var(--light-0) / <alpha-value>)",
+					1: "hsl(var(--light-1) / <alpha-value>)",
+					2: "hsl(var(--light-2) / <alpha-value>)",
+				}
+
 			},
 
 			fontFamily: {
@@ -32,6 +39,11 @@ export default {
 				small: "var(--spacing-small)",
 				base: "var(--spacing-base)",
 				large: "var(--spacing-large)"
+			},
+
+			transitionDuration: {
+				quick: "var(--duration-quick)",
+				base: "var(--duration-base)",
 			}
 		},
 	},

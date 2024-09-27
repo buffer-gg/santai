@@ -10,13 +10,20 @@
 
     --accent: 26 98% 52%;
 
+    --light-0: 220 16% 80%;
+    --light-1: 220 9% 88%;
+    --light-2: 220 2% 96%;
+
     --radius-small: 0.1rem;
     --radius-base: 0.3rem;
     --radius-large: 0.8rem;
 
     --spacing-small: 0.2rem;
     --spacing-base: 0.5rem;
-    --spacing-large: 1.5rem;
+    --spacing-large: 2rem;
+
+    --duration-quick: 0.08s;
+    --duration-base: 0.22s;
   }
 
   @font-face {
