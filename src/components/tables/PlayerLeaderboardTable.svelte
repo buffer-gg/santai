@@ -3,38 +3,26 @@
   import { createSvelteTable, flexRender, getCoreRowModel } from "@tanstack/svelte-table";
   import type { ColumnDef, TableOptions } from "@tanstack/svelte-table";
 
-  enum SpectreRank {
-    Unranked,
-    Bronze,
-    Silver,
-    Gold,
-    Platinum,
-    Emerald,
-    Ruby,
-    Diamond,
-    Champion,
-  }
-
   type Player = {
     username: string;
-    rank: SpectreRank;
+    rank: number;
     placement: number;
   };
 
   const defaultData: Player[] = [
     {
       username: "truo",
-      rank: SpectreRank.Champion,
+      rank: 20,
       placement: 1,
     },
     {
       username: "limited",
-      rank: SpectreRank.Unranked,
+      rank: 10,
       placement: 2,
     },
     {
       username: "haft",
-      rank: SpectreRank.Emerald,
+      rank: 10,
       placement: 3,
     },
   ];
@@ -60,42 +48,33 @@
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const rerender = () => {
-    options.update((options) => ({
-      ...options,
-      data: defaultData,
-    }));
-  };
-
   const table = createSvelteTable(options);
 </script>
 
-<div class="rounded-base bg-dark-1">
-  <table class="w-full">
-    <thead>
-      {#each $table.getHeaderGroups() as headerGroup}
-        <tr class="w-full border-b border-dark-2">
-          {#each headerGroup.headers as header}
-            <th>
-              {#if !header.isPlaceholder}
-                <svelte:component this={flexRender(header.column.columnDef.header, header.getContext())} />
-              {/if}
-            </th>
-          {/each}
-        </tr>
-      {/each}
-    </thead>
-    <tbody>
-      {#each $table.getRowModel().rows as row}
-        <tr>
+<table class="w-full rounded-base border border-dark-2 bg-dark-1">
+  <thead class="bg-dark-2">
+    {#each $table.getHeaderGroups() as headerGroup}
+      <tr>
+        {#each headerGroup.headers as header}
+          <th class="text-2xl text-light-0 font-dharmagothic font-light">
+            <svelte:component this={flexRender(header.column.columnDef.header, header.getContext())} />
+          </th>
+        {/each}
+      </tr>
+    {/each}
+  </thead>
+
+  <tbody>
+    {#each $table.getRowModel().rows as row}
+      <a href="/">
+        <tr class="border border-dark-2">
           {#each row.getVisibleCells() as cell}
-            <td>
+            <td class="p-base text-light-2">
               <svelte:component this={flexRender(cell.column.columnDef.cell, cell.getContext())} />
             </td>
           {/each}
         </tr>
-      {/each}
-    </tbody>
-  </table>
-  <!-- <button on:click={() => rerender()} class="border p-2">Rerender</button> -->
-</div>
+      </a>
+    {/each}
+  </tbody>
+</table>
