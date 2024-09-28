@@ -3,22 +3,22 @@ import Layout from "../layouts/Layout.astro";
 import SearchBar from "../components/navigation/SearchBar.svelte";
 import Card from "../components/information/Card.astro";
 
-import SiteInformation from "../information/SiteInformation.json";
+import aboutSantaiGG from "../data/about-santaigg.json";
 import BackgroundImage from "../components/cosmetic/BackgroundImage.astro";
-import Logo from "../components/Logo.astro";
+import Logo from "../components/navigation/Logo.astro";
 ---
 
-<Layout pageTitle="Santai.gg | Spectre Divide Leaderboard" hiddenNavbar hiddenFooter>
+<Layout pageTitle="Santai.GG" hiddenNavbar hiddenFooter>
   <main>
     <BackgroundImage imagePath="/src/assets/background-00.png" altText="Spectre Divide - spectators cheering." />
 
     <div class="flex h-[90lvh] mx-large">
-      <div class="flex flex-col w-full max-w-screen-sm m-auto gap-large">
-        <Logo class="text-4xl" />
+      <div class="flex flex-col w-full h-full max-w-screen-sm m-auto gap-large">
+        <Logo class="mt-auto text-4xl" />
 
-        <!-- Leaderbord Button & Searchbar -->
+        <!-- Search Bar -->
         <div class="flex flex-row w-full gap-base">
-          <Card href="/players" class="h-full py-0 px-base md:px-large bg-gradient-to-br from-dark-1 to-dark-0 -skew-x-30 hover:-translate-x-1">
+          <Card href="/players" class="h-full py-0 px-base md:px-large -skew-x-30 hover:-translate-x-1">
               <svg class="w-9 skew-x-30 stroke-light-0 group-hover/card:stroke-light-2 duration-quick" stroke-width="0.75" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 19H9V12.5V8.6C9 8.26863 9.26863 8 9.6 8H14.4C14.7314 8 15 8.26863 15 8.6V14.5V19Z" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"></path>
                 <path d="M20.4 19H15V15.1C15 14.7686 15.2686 14.5 15.6 14.5H20.4C20.7314 14.5 21 14.7686 21 15.1V18.4C21 18.7314 20.7314 19 20.4 19Z" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -29,8 +29,8 @@ import Logo from "../components/Logo.astro";
         </div>
 
         <!-- Affiliate Notice -->
-        <div class="mx-auto mt-large max-w-96 text-xs text-light-0 brightness-50">
-          {SiteInformation.affiliateNotice}
+        <div class="mx-auto mt-auto text-xs text-light-0 brightness-50">
+          {aboutSantaiGG.affiliateNotice}
         </div>
       </div>
     </div>

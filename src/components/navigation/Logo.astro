@@ -1,0 +1,18 @@
+---
+import { cn } from '../../utils/cn';
+
+interface Props {
+    class?: string;
+    tagline?: boolean;
+}
+
+const { class: className, tagline } = Astro.props;
+---
+
+<a href="/" class={cn("inline-flex flex-col mx-auto select-none tracking-wider font-planetkosmos text-light-1 hover:text-light-2", className)}>
+    santai.gg
+    {
+        tagline &&
+        <span class="text-center -skew-x-30 text-sm font-dharmagothic">Spectre Divide Leaderboards</span>
+    }
+</a>

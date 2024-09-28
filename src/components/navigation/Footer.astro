@@ -1,5 +1,5 @@
 ---
-import siteInformation from "../../information/SiteInformation.json";
+import aboutSantaiGG from "../../data/about-santaigg.json";
 
 interface Props {
   hidden?: boolean;
@@ -11,6 +11,6 @@ const { hidden = false } = Astro.props;
 {
     !hidden &&
     <footer class="absolute bottom-0 w-full p-4 text-center bg-dark-0 text-dark-2">
-      {siteInformation.affiliateNotice}
+      {aboutSantaiGG.affiliateNotice}
     </footer>
 }

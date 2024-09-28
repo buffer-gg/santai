@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import siteInformation from "../information/SiteInformation.json";
+import aboutSantaiGG from "../data/about-santaigg.json";
 import { ViewTransitions } from "astro:transitions";
 import Navbar from "../components/navigation/Navbar.astro";
 import Footer from "../components/navigation/Footer.astro";
@@ -15,7 +15,7 @@ interface Props {
   hiddenFooter?: boolean;
 }
 
-const { class: className, style, pageTitle, hiddenNavbar = false, hiddenFooter = false, pageDescription = siteInformation.siteDescription } = Astro.props;
+const { class: className, style, pageTitle, hiddenNavbar = false, hiddenFooter = false, pageDescription = aboutSantaiGG.siteDescription } = Astro.props;
 ---
 
 <!doctype html>
