@@ -51,13 +51,13 @@
   const table = createSvelteTable(options);
 </script>
 
-<table class="w-full rounded-base rounded-tl-large rounded-br-large border border-dark-2 bg-dark-1">
+<table class="w-full border border-dark-2 bg-dark-1">
   <thead class="bg-dark-2">
     {#each $table.getHeaderGroups() as headerGroup}
       <tr>
         {#each headerGroup.headers as header}
-          <th class="text-2xl text-light-0 font-dharmagothic font-light">
-            <svelte:component this={flexRender(header.column.columnDef.header, header.getContext())} />
+          <th class="p-base text-3xl text-light-0 font-dharmagothic font-light text-left">
+            {header.id.toUpperCase()}
           </th>
         {/each}
       </tr>
@@ -72,7 +72,7 @@
       >
         {#each row.getVisibleCells() as cell}
           <td class="p-base">
-            <svelte:component this={flexRender(cell.column.columnDef.cell, cell.getContext())} />
+            {cell.getValue()}
           </td>
         {/each}
       </tr>
