@@ -1,1 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg width="100%" height="100%" viewBox="0 0 287 77" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><rect id="Artboard2" x="0" y="0" width="286.634" height="76.08" style="fill:#fff;fill-opacity:0;"/><clipPath id="_clip1"><rect id="Artboard21" serif:id="Artboard2" x="0" y="0" width="286.634" height="76.08"/></clipPath><g clip-path="url(#_clip1)"><g><path d="M45.6,55.92l-45.6,-0l0,-10.32l35.28,-0l-0,-2.4l-25.44,-0l-0,-17.768l5.272,-5.272l30.488,-0l-0,10.32l-25.44,-0l-0,2.4l25.44,-0l-0,23.04Z" style="fill:#fff;"/><path d="M147.674,30.48l-13.754,-0l-0,15.12l12.628,-0l0,10.32l-17.476,-0l-5.472,-5.472l-0,-50.448l10.32,0l-0,20.16l13.754,-0l0,10.32Z" style="fill:#fff;"/><path d="M111.12,76.08l-0,-45.6l-15.12,-0l-0,22.368l-5.472,5.472l-11.856,-0l-5.472,-5.472l-0,-22.368l-15.12,-0l-0,15.12l12.96,-0l-0,10.32l-23.28,-0l-0,-30.3l5.46,-5.46l19.98,-0l-0,-2.4l10.32,-0l-0,30.24l2.16,-0l-0,-30.24l10.32,-0l-0,2.4l19.98,-0l5.46,5.46l-0,50.46l-10.32,-0Z" style="fill:#fff;"/><path d="M175.514,58.32l0,-27.84l-15.12,-0l0,15.12l12.96,-0l0,10.32l-23.28,-0l0,-30.3l5.46,-5.46l19.98,-0l0,-2.4l10.32,-0l0,30.24l2.16,-0l0,-27.84l10.32,-0l0,32.688l-5.472,5.472l-17.328,-0Z" style="fill:#fff;"/><path d="M238.394,65.76l0,-35.28l-15.12,-0l0,15.12l12.96,-0l0,10.32l-23.28,-0l0,-30.3l5.46,-5.46l30.3,-0l0,50.448l-5.472,5.472l-30.288,-0l0,-17.76l10.32,-0l0,7.44l15.12,-0Z" style="fill:#fff;"/><path d="M276.314,65.76l0,-35.28l-15.12,-0l0,15.12l12.96,-0l0,10.32l-23.28,-0l0,-30.3l5.46,-5.46l30.3,-0l0,50.448l-5.472,5.472l-30.288,-0l0,-17.76l10.32,-0l0,7.44l15.12,-0Z" style="fill:#fff;"/><path d="M210.794,45.6l0,10.32l-4.848,-0l-5.472,-5.472l0,-4.848l10.32,-0Z" style="fill:#fff;"/><rect x="187.994" y="7.44" width="10.32" height="10.32" style="fill:#fff;"/></g></g></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 287 77" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+<rect id="Artboard2" x="0" y="0" width="286.634" height="76.08" style="fill:#fff;fill-opacity:0;"/>
+<clipPath id="_clip1">
+<rect id="Artboard21" serif:id="Artboard2" x="0" y="0" width="286.634" height="76.08"/>
+</clipPath>
+<g clip-path="url(#_clip1)">
+<g>
+<path d="M45.6,55.92l-45.6,-0l0,-10.32l35.28,-0l-0,-2.4l-25.44,-0l-0,-17.768l5.272,-5.272l30.488,-0l-0,10.32l-25.44,-0l-0,2.4l25.44,-0l-0,23.04Z" style="fill:#fff;"/>
+<path d="M147.674,30.48l-13.754,-0l-0,15.12l12.628,-0l0,10.32l-17.476,-0l-5.472,-5.472l-0,-50.448l10.32,0l-0,20.16l13.754,-0l0,10.32Z" style="fill:#fff;"/>
+<path d="M111.12,76.08l-0,-45.6l-15.12,-0l-0,22.368l-5.472,5.472l-11.856,-0l-5.472,-5.472l-0,-22.368l-15.12,-0l-0,15.12l12.96,-0l-0,10.32l-23.28,-0l-0,-30.3l5.46,-5.46l30.3,-0l-0,27.84l2.16,-0l-0,-27.84l30.3,-0l5.46,5.46l-0,50.46l-10.32,-0Z" style="fill:#fff;"/>
+<path d="M175.514,58.32l0,-27.84l-15.12,-0l0,15.12l12.96,-0l0,10.32l-23.28,-0l0,-30.3l5.46,-5.46l30.3,-0l0,27.84l2.16,-0l0,-27.84l10.32,-0l0,32.688l-5.472,5.472l-17.328,-0Z" style="fill:#fff;"/>
+<path d="M238.394,65.76l0,-35.28l-15.12,-0l0,15.12l12.96,-0l0,10.32l-23.28,-0l0,-30.3l5.46,-5.46l30.3,-0l0,50.448l-5.472,5.472l-30.288,-0l0,-17.76l10.32,-0l0,7.44l15.12,-0Z" style="fill:#fff;"/>
+<path d="M276.314,65.76l0,-35.28l-15.12,-0l0,15.12l12.96,-0l0,10.32l-23.28,-0l0,-30.3l5.46,-5.46l30.3,-0l0,50.448l-5.472,5.472l-30.288,-0l0,-17.76l10.32,-0l0,7.44l15.12,-0Z" style="fill:#fff;"/>
+<path d="M210.794,45.6l0,10.32l-4.848,-0l-5.472,-5.472l0,-4.848l10.32,-0Z" style="fill:#fff;"/>
+<rect x="187.994" y="7.44" width="10.32" height="10.32" style="fill:#fff;"/>
+</g>
+</g>
+</svg>
