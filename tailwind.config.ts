@@ -47,7 +47,7 @@ export default {
 			transitionDuration: {
 				quick: "var(--duration-quick)",
 				base: "var(--duration-base)",
-			}
+			},
 		},
 	},
 	plugins: [],
