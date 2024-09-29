@@ -8,18 +8,18 @@ import PlayerLeaderboardTable from "../../components/tables/PlayerLeaderboardTab
 
 <Layout pageTitle="Santai.GG | Player Leaderboard" hiddenFooter>
   <main>
-    <BackgroundImage imagePath="/src/assets/background-01.png" altText="Spectre Divide - players clearing site." class="brightness-125" />
+    <BackgroundImage imagePath="/src/assets/background-01.png" altText="Spectre Divide - players clearing site." class="brightness-110" />
 
-    <Constrict class="mt-large mx-base gap-base">
+    <Constrict class="mt-large mx-large gap-base">
       <div class="flex flex-col mb-large md:flex-row">
         <div>
           <h2 class="text-4xl text-light-1 font-dharmagothic font-light">PLAYER</h2>
           <h1 class="text-6xl text-light-2 font-dharmagothic">LEADERBOARD</h1>
         </div>
-        <Note type={InfoType.Normal} body="Santai.GG leaderboard is work in progress."class="mt-large md:mt-0 md:ml-auto" />
+        <Note type={InfoType.Warning} body="Santai.GG is work in progress."class="mt-large md:mt-0 md:ml-auto" />
       </div>
 
-       <PlayerLeaderboardTable />
+       <PlayerLeaderboardTable client:load />
     </Constrict>
   </main>
 </Layout>

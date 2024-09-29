@@ -24,14 +24,14 @@ const { class: className, style, pageTitle, hiddenNavbar = false, hiddenFooter =
     <meta charset="UTF-8" />
     <meta name="description" content={pageDescription} />
     <meta name="viewport" content="width=device-width" />
-    <meta name="theme-color" content="#111722" />
+    <meta name="theme-color" content="#f5ca3d" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
     <ViewTransitions />
   </head>
   <body class={cn("bg-dark-0", className)} style={style}>
-    <Navbar hidden={hiddenNavbar} />
+    <Navbar hidden={hiddenNavbar} darkLogo />
     <slot />
     <Footer hidden={hiddenFooter} />
   </body>

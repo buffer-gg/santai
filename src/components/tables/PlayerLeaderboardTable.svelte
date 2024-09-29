@@ -27,7 +27,7 @@
     },
   ];
 
-  const defaultColumns: ColumnDef<Person>[] = [
+  const defaultColumns: ColumnDef<Player>[] = [
     {
       accessorKey: "placement",
       cell: (info) => info.getValue(),
@@ -42,7 +42,7 @@
     },
   ];
 
-  const options = writable<TableOptions<Person>>({
+  const options = writable<TableOptions<Player>>({
     data: defaultData,
     columns: defaultColumns,
     getCoreRowModel: getCoreRowModel(),
@@ -51,10 +51,10 @@
   const table = createSvelteTable(options);
 </script>
 
-<table class="w-full rounded-base border border-dark-2 bg-dark-1">
+<table class="w-full rounded-base rounded-tl-large rounded-br-large border border-dark-2 bg-dark-1">
   <thead class="bg-dark-2">
     {#each $table.getHeaderGroups() as headerGroup}
-      <tr>
+      <tr class="w-full">
         {#each headerGroup.headers as header}
           <th class="text-2xl text-light-0 font-dharmagothic font-light">
             <svelte:component this={flexRender(header.column.columnDef.header, header.getContext())} />
@@ -66,15 +66,16 @@
 
   <tbody>
     {#each $table.getRowModel().rows as row}
-      <a href="/">
-        <tr class="border border-dark-2">
-          {#each row.getVisibleCells() as cell}
-            <td class="p-base text-light-2">
-              <svelte:component this={flexRender(cell.column.columnDef.cell, cell.getContext())} />
-            </td>
-          {/each}
-        </tr>
-      </a>
+      <tr
+        class="group/row border border-dark-2 cursor-pointer text-light-2 hover:bg-accent hover:text-black duration-quick"
+        on:click={() => (location.href = "https://www.santai.gg/players/" + row.getValue("username"))}
+      >
+        {#each row.getVisibleCells() as cell}
+          <td class="p-base">
+            <svelte:component this={flexRender(cell.column.columnDef.cell, cell.getContext())} />
+          </td>
+        {/each}
+      </tr>
     {/each}
   </tbody>
 </table>

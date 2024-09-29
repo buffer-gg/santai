@@ -4,12 +4,13 @@ import { cn } from '../../utils/cn';
 interface Props {
     class?: string;
     tagline?: boolean;
+    dark?: boolean;
 }
 
-const { class: className, tagline } = Astro.props;
+const { class: className, tagline, dark } = Astro.props;
 ---
 
-<a href="/" class={cn("inline-flex flex-col mx-auto select-none tracking-wider font-planetkosmos text-light-1 hover:text-light-2", className)}>
+<a href="/" class={cn("inline-flex flex-col mx-auto select-none tracking-wider font-planetkosmos duration-quick", (dark ? "text-dark-2 hover:text-dark-0" : "drop-shadow-md text-light-0 hover:text-accent"), className)}>
     santai.gg
     {
         tagline &&
