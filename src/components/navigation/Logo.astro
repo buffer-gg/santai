@@ -1,4 +1,6 @@
 ---
+import Image from "astro/components/Image.astro";
+import santaiggLogo from "./public/santaigg-logo.svg";
 import { cn } from '../../utils/cn';
 
 interface Props {
@@ -11,9 +13,14 @@ const { class: className, tagline, dark } = Astro.props;
 ---
 
 <a href="/" class={cn("inline-flex flex-col mx-auto select-none tracking-wider font-planetkosmos duration-quick", (dark ? "text-dark-2 hover:text-dark-0" : "drop-shadow-md text-light-0 hover:text-accent"), className)}>
+    <Image
+        src={santaiggLogo}
+        alt="Santai.gg Logo."
+    />
+<!--     
     santai.gg
     {
         tagline &&
         <span class="text-center -skew-x-30 text-sm font-dharmagothic">Spectre Divide Leaderboards</span>
-    }
+    } -->
 </a>
