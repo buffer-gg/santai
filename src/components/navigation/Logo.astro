@@ -9,12 +9,11 @@ interface Props {
 
 const { class: className } = Astro.props;
 ---
-<!-- filter: brightness(0) saturate(100%) invert(82%) sepia(33%) saturate(1128%) hue-rotate(345deg) brightness(102%) contrast(95%);  -->
 
-<a href="/" class={cn("group/logo inline-flex flex-col w-56 mx-auto select-none tracking-wider font-planetkosmos fill-accent duration-quick", className)}>
+<a href="/" class={cn("group/logo duration-quick")}>
     <?xml version="1.0" encoding="UTF-8" standalone="no"?>
     <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-    <svg  viewBox="0 0 287 77" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <svg class={cn("w-56", className)} viewBox="0 0 287 77" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
         <rect x="0" y="0" width="286.634" height="76.08" style="fill:#fff;fill-opacity:0;" />
         <clipPath id="_clip1">
             <rect x="0" y="0" width="286.634" height="76.08"/>
