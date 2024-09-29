@@ -67,7 +67,7 @@
   <tbody>
     {#each $table.getRowModel().rows as row}
       <tr
-        class="group/row border border-dark-2 cursor-pointer text-light-2 hover:bg-accent hover:text-black duration-quick"
+        class="group/row border border-dark-2 cursor-pointer text-light-2 outline outline-0 outline-offset-4 outline-accent hover:bg-accent hover:text-black hover:outline-2 duration-quick"
         on:click={() => (location.href = "https://www.santai.gg/players/" + row.getValue("username"))}
       >
         {#each row.getVisibleCells() as cell}
