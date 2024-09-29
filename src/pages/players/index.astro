@@ -4,6 +4,8 @@ import Constrict from "../../components/blocks/Constrict.astro";
 import Layout from "../../layouts/Layout.astro";
 import Note, { InfoType } from "../../components/information/Note.astro";
 import PlayerLeaderboardTable from "../../components/tables/PlayerLeaderboardTable.svelte";
+import { Image } from "astro:assets";
+import soloRank from "../../assets/rank-solo.svg";
 ---
 
 <Layout pageTitle="Santai.GG | Player Leaderboard" hiddenFooter>
@@ -12,9 +14,17 @@ import PlayerLeaderboardTable from "../../components/tables/PlayerLeaderboardTab
 
     <Constrict class="mt-large mx-large gap-base">
       <div class="flex flex-col mb-large md:flex-row">
-        <div>
-          <h2 class="text-4xl text-light-1 font-dharmagothic font-light">PLAYER</h2>
-          <h1 class="text-6xl text-light-2 font-dharmagothic">LEADERBOARD</h1>
+        <div class="flex flex-row gap-large md:flex-row">
+
+          <div class="mr-auto">
+            <h2 class="text-4xl text-light-1 font-dharmagothic font-light">PLAYER</h2>
+            <h1 class="text-6xl text-light-2 font-dharmagothic">LEADERBOARD</h1>
+          </div>
+          <Image
+          src={soloRank}
+          alt="Spectre Divide solo rank icon."
+          class="w-24"
+        />
         </div>
         <Note type={InfoType.Warning} body="Santai.GG is work in progress."class="mt-large md:mt-0 md:ml-auto" />
       </div>
