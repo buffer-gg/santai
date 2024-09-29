@@ -5,15 +5,13 @@ import { cn } from '../../utils/cn';
 
 interface Props {
     class?: string;
-    tagline?: boolean;
-    dark?: boolean;
 }
 
-const { class: className, tagline, dark } = Astro.props;
+const { class: className } = Astro.props;
 ---
 <!-- filter: brightness(0) saturate(100%) invert(82%) sepia(33%) saturate(1128%) hue-rotate(345deg) brightness(102%) contrast(95%);  -->
 
-<a href="/" class={cn("group/logo inline-flex flex-col w-56 mx-auto select-none tracking-wider font-planetkosmos fill-accent duration-quick", (dark ? "text-dark-2 hover:text-dark-0" : "drop-shadow-md text-light-0 hover:text-accent"), className)}>
+<a href="/" class={cn("group/logo inline-flex flex-col w-56 mx-auto select-none tracking-wider font-planetkosmos fill-accent duration-quick", className)}>
     <?xml version="1.0" encoding="UTF-8" standalone="no"?>
     <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
     <svg  viewBox="0 0 287 77" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
@@ -34,10 +32,4 @@ const { class: className, tagline, dark } = Astro.props;
             </g>
         </g>
     </svg>
-<!--     
-    santai.gg
-    {
-        tagline &&
-        <span class="text-center -skew-x-30 text-sm font-dharmagothic">Spectre Divide Leaderboards</span>
-    } -->
 </a>
