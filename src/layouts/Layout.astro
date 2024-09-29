@@ -30,7 +30,7 @@ const { class: className, style, pageTitle, hiddenNavbar = false, hiddenFooter =
     <title>{pageTitle}</title>
     <ViewTransitions />
   </head>
-  <body class={cn("bg-dark-0", className)} style={style}>
+  <body class={cn("flex flex-col min-h-lvh bg-dark-0", className)} style={style}>
     <Navbar hidden={hiddenNavbar} darkLogo />
     <slot />
     <Footer hidden={hiddenFooter} />

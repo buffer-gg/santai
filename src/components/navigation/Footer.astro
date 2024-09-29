@@ -11,8 +11,8 @@ const { hidden = false } = Astro.props;
 
 {
     !hidden &&
-    <footer class="w-full mt-20 p-4 outline outline-4 outline-offset-4 outline-accent text-center bg-accent text-xs text-dark-0 font-semibold md:text-sm">
+    <footer class="w-full mt-auto p-large outline outline-4 outline-offset-4 outline-accent text-center bg-accent text-xs text-dark-0 font-semibold md:text-sm">
       {aboutSantaiGG.affiliateNotice}
-      <DeveloperCredits />
+      <DeveloperCredits class="block mt-large" />
     </footer>
 }
