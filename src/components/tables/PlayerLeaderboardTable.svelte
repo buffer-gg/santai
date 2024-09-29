@@ -54,7 +54,7 @@
 <table class="w-full rounded-base rounded-tl-large rounded-br-large border border-dark-2 bg-dark-1">
   <thead class="bg-dark-2">
     {#each $table.getHeaderGroups() as headerGroup}
-      <tr class="w-full">
+      <tr>
         {#each headerGroup.headers as header}
           <th class="text-2xl text-light-0 font-dharmagothic font-light">
             <svelte:component this={flexRender(header.column.columnDef.header, header.getContext())} />
