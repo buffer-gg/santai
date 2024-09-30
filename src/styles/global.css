@@ -25,8 +25,8 @@
     --spacing-base: 0.5rem;
     --spacing-large: 2rem;
 
-    --duration-quick: 0.08s;
-    --duration-base: 0.16s;
+    --duration-quick: 0.07s;
+    --duration-base: 0.14s;
   }
 
   @font-face {
