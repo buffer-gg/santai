@@ -1,12 +1,11 @@
-import { RANK_TYPES } from "@/types";
-import { LeaderboardId, leaderboards } from "./leaderboards";
+import type { LeaderboardId } from "./fetchLeaderboard";
+import {  leaderboards } from "./fetchLeaderboard";
 
 export const fetchData = async (
   leaderboardVersion: LeaderboardId,
-  platform: RANK_TYPES,
 ) => {
   const leaderboard = leaderboards[leaderboardVersion as LeaderboardId];
-  const data = await leaderboard.fetchData(platform);
+  const data = await leaderboard.fetchData();
 
   // If the leaderboard has a transformData function, use it and return the transformed data
   if ("transformData" in leaderboard) {
