@@ -6,6 +6,10 @@ import Note, { InfoType } from "../../components/information/Note.astro";
 import PlayerLeaderboardTable from "../../components/tables/PlayerLeaderboardTable.svelte";
 import { Image } from "astro:assets";
 import soloRank from "../../assets/rank-solo.svg";
+import { fetchLeaderboard } from "../../utils/fetch/fetchLeaderboard";
+import type { LeaderboardId } from "../../utils/types/leaderboard";
+
+const leaderboard = await fetchLeaderboard("season0" as LeaderboardId);
 ---
 
 <Layout pageTitle="Santai.GG | Player Leaderboard">
@@ -29,7 +33,7 @@ import soloRank from "../../assets/rank-solo.svg";
         <Note type={InfoType.Warning} body="Santai.GG is work in progress."class="mt-large md:mt-0 md:ml-auto" />
       </div>
 
-       <PlayerLeaderboardTable client:load />
+       <PlayerLeaderboardTable client:idle playerRows={leaderboard} />
     </Constrict>
   </main>
 </Layout>

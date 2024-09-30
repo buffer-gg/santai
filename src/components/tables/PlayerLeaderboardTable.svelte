@@ -1,48 +1,32 @@
 <script lang="ts">
   import { writable } from "svelte/store";
-  import { createSvelteTable, flexRender, getCoreRowModel } from "@tanstack/svelte-table";
+  import { createSvelteTable, getCoreRowModel } from "@tanstack/svelte-table";
   import type { ColumnDef, TableOptions } from "@tanstack/svelte-table";
+  import type PlayerStats from "../../utils/types/playerStats";
 
-  type Player = {
-    username: string;
-    rank: number;
-    placement: number;
-  };
+  export let playerRows: PlayerStats[];
 
-  const defaultData: Player[] = [
-    {
-      username: "truo",
-      rank: 20,
-      placement: 1,
-    },
-    {
-      username: "limited",
-      rank: 10,
-      placement: 2,
-    },
-    {
-      username: "haft",
-      rank: 10,
-      placement: 3,
-    },
-  ];
+  const defaultData: PlayerStats[] = playerRows;
 
-  const defaultColumns: ColumnDef<Player>[] = [
+  const defaultColumns: ColumnDef<PlayerStats>[] = [
     {
       accessorKey: "placement",
+      header: "#",
       cell: (info) => info.getValue(),
     },
     {
       accessorKey: "username",
+      header: "USERNAME",
       cell: (info) => info.getValue(),
     },
     {
-      accessorKey: "rank",
+      accessorKey: "soloRank",
+      header: "RANK",
       cell: (info) => info.getValue(),
     },
   ];
 
-  const options = writable<TableOptions<Player>>({
+  const options = writable<TableOptions<PlayerStats>>({
     data: defaultData,
     columns: defaultColumns,
     getCoreRowModel: getCoreRowModel(),
@@ -52,12 +36,12 @@
 </script>
 
 <table class="w-full border border-dark-2 bg-dark-1">
-  <thead class="bg-dark-2">
+  <thead class="sticky top-[3.15rem] bg-dark-2">
     {#each $table.getHeaderGroups() as headerGroup}
       <tr>
         {#each headerGroup.headers as header}
           <th class="p-base text-3xl text-light-0 font-dharmagothic font-light text-left">
-            {header.id.toUpperCase()}
+            {header.column.columnDef.header?.toString().toUpperCase()}
           </th>
         {/each}
       </tr>

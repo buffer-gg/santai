@@ -1,34 +1,16 @@
-import type { Leaderboard } from "../types/leaderboard";
-import type PlayerStats from "../types/playerStats";
-import type { SoloPayload } from "../types/payload";
-import noStoreFetch from "./noStoreFetch";
+import type { LeaderboardId } from "../types/leaderboard";
+import { leaderboards } from "../types/leaderboard";
 
-export type LeaderboardId = keyof typeof leaderboards;
+export async function fetchLeaderboard(leaderboardId: LeaderboardId,) {
+  const leaderboard = leaderboards[leaderboardId];
+  const data = await leaderboard.fetchData();
+  
+  // If the leaderboard has a transformData function, use it and return the transformed data
+  if ("transformData" in leaderboard) {
+    // @ts-ignore TS doesn't know what this funcion is because it's not used at times
+    const transformedData = leaderboard.transformData(data);
+    return transformedData;
+  }
 
-export const defaultLeaderboardId: LeaderboardId = "season0";
-export const leaderboardIdsToPrefetch: LeaderboardId[] = ["season0"];
-
-export const leaderboards = {
-  season0: {
-    enabled: true,
-
-    id: "season0",
-    name: "Season 0",
-
-    fetchData: async () => {
-      const res = await noStoreFetch(
-        "https://collective-production.up.railway.app/getLeaderboard/1000/SOLO",
-      );
-      const data = await res.json();
-      const playerStats = (data as SoloPayload).map((d) => {
-        return {
-          "username": d.username,
-          "placement": d.placement,
-          "rating": d.rating
-        }
-      })
-      return playerStats as unknown as PlayerStats[];
-    },
-  },
-} satisfies Record<string, Leaderboard>;
-
+  return data;
+};

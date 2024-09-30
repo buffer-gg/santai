@@ -1,4 +1,4 @@
-export default function getSoloRankFromRating(rankNumber: number): string {
+export default function getSoloRankFromNumber(rankNumber: number): string {
     const soloRanks: { [key: number]: string } = {
         0: "Unranked",
         1: "Bronze 1",
