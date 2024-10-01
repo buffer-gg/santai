@@ -1,10 +1,10 @@
 <script lang="ts">
   import { cn } from "../../utils/cn";
-  export let className: string;
+  export let className: string = "";
 </script>
 
 <div class="flex flew-row w-full gap-small">
-  <div class={cn("w-full h-fit py-base px-large overflow-clip rounded-base bg-light-0", className)}><div>Search...</div></div>
+  <div class={cn("w-full h-fit p-base overflow-clip rounded-base bg-light-0", className)}><div>Search...</div></div>
 </div>
 
 <!-- <button class="flex w-20 md:w-32 rounded-base rounded-tl-large bg-accent [&>*]:skew-x-30">

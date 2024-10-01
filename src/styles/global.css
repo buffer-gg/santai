@@ -17,9 +17,9 @@
     --warning: 20 80% 60%;
     --destructive: 0 100% 60%;
 
-    --radius-small: 0; /* 0.1 */
-    --radius-base: 0; /* 0.3 */
-    --radius-large: 0; /* 0.8 */
+    --radius-small: 0.05; /* 0.1 */
+    --radius-base: 0.1; /* 0.3 */
+    --radius-large: 0.2; /* 0.8 */
 
     --spacing-small: 0.2rem;
     --spacing-base: 0.5rem;
