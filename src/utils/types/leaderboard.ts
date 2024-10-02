@@ -26,7 +26,7 @@ export const leaderboards = {
 
     fetchData: async () => {
       const res = await noStoreFetch(
-        "https://collective-production.up.railway.app/getLeaderboard/1000/SOLO",
+        "https://collective-production.up.railway.app/getLeaderboard/500/SOLO",
       );
       const data = await res.json();
 

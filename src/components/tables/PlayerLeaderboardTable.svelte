@@ -33,12 +33,17 @@
     getCoreRowModel: getCoreRowModel(),
   });
 
+  let searchFilter = "";
   const table = createSvelteTable(options);
+
+  const handleKeyUp = (e: any) => {
+    $table.setGlobalFilter(String(e?.target?.value));
+  };
 </script>
 
 <div>
   <div class="sticky top-[3.1rem] w-full mb-base bg-dark-2">
-    <SearchBar className="w-full m-base rounded-lg text-light-0 bg-dark-1" />
+    <SearchBar className="w-full m-base rounded-lg text-light-0 bg-dark-1" searchValueBind={searchFilter} handleKeyUpBind={handleKeyUp} />
   </div>
 
   <table class="w-full border border-dark-2 bg-dark-1">
