@@ -8,7 +8,7 @@ export default async function Player({params}: {params: {playerId: string}}) {
     const PlayerMatchHistory: PlayerMatchHistory[] = await player.json();
 
     return (
-        <div className="flex flex-col items-center justify-center py-10">
+        <div className="flex flex-col items-center justify-center py-10 gap-4">
             <h1 className="text-2xl font-bold text-center text-white">{PlayerMatchHistory[0].saved_player_name}</h1>
             <MatchHistory PlayerMatchHistory={PlayerMatchHistory} />
         </div>

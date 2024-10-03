@@ -12,6 +12,7 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match }) => {
         <div className="flex items-center gap-2">
           {/* <Image src={player?.avatar_url} alt={player?.name} width={24} height={24} className="rounded-full" /> */}
           <span className={isPlayerTeam ? "text-cyan-400" : "text-red-400"}>{player?.saved_player_name}</span>
+          <span className="text-gray-400 text-sm">({player?.saved_sponsor_name})</span>
         </div>
         <div className="flex gap-4">
           <span>{player?.total_damage_done?.toLocaleString()}</span>
