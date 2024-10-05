@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { writable } from "svelte/store";
-  import { createSvelteTable, getCoreRowModel } from "@tanstack/svelte-table";
-  import type { ColumnDef, TableOptions } from "@tanstack/svelte-table";
-  import SearchBar from "../navigation/SearchBar.svelte";
-  import type PlayerStats from "../../utils/types/playerStats";
+import { writable } from "svelte/store";
+import { createSvelteTable, getCoreRowModel } from "@tanstack/svelte-table";
+import type { ColumnDef, TableOptions } from "@tanstack/svelte-table";
+import SearchBar from "../navigation/SearchBar.svelte";
+import type PlayerStats from "../../utils/types/playerStats";
 
   export let playerRows: PlayerStats[];
   export let sliceSize: number = 25;
@@ -27,38 +27,38 @@
 
   window.addEventListener("scroll", handleInfiniteScroll);
 
-  const defaultData: PlayerStats[] = playerRows;
+const defaultData: PlayerStats[] = playerRows;
 
-  const defaultColumns: ColumnDef<PlayerStats>[] = [
-    {
-      accessorKey: "placement",
-      header: "#",
-      cell: (info) => info.getValue(),
-    },
-    {
-      accessorKey: "username",
-      header: "USERNAME",
-      cell: (info) => info.getValue(),
-    },
-    {
-      accessorKey: "soloRank",
-      header: "RANK",
-      cell: (info) => info.getValue(),
-    },
-  ];
+const defaultColumns: ColumnDef<PlayerStats>[] = [
+	{
+		accessorKey: "placement",
+		header: "#",
+		cell: (info) => info.getValue(),
+	},
+	{
+		accessorKey: "username",
+		header: "USERNAME",
+		cell: (info) => info.getValue(),
+	},
+	{
+		accessorKey: "soloRank",
+		header: "RANK",
+		cell: (info) => info.getValue(),
+	},
+];
 
-  const options = writable<TableOptions<PlayerStats>>({
-    data: defaultData,
-    columns: defaultColumns,
-    getCoreRowModel: getCoreRowModel(),
-  });
+const options = writable<TableOptions<PlayerStats>>({
+	data: defaultData,
+	columns: defaultColumns,
+	getCoreRowModel: getCoreRowModel(),
+});
 
-  let searchFilter = "";
-  const table = createSvelteTable(options);
+let searchFilter = "";
+const table = createSvelteTable(options);
 
-  const handleKeyUp = (e: any) => {
-    $table.setGlobalFilter(String(e?.target?.value));
-  };
+const handleKeyUp = (e: any) => {
+	$table.setGlobalFilter(String(e?.target?.value));
+};
 </script>
 
 <div>
@@ -83,7 +83,7 @@
       {#each $table.getRowModel().rows as row}
         <tr
           class="group/row border border-dark-2 cursor-pointer text-light-2 outline outline-0 outline-offset-4 outline-accent hover:bg-accent hover:text-black hover:outline-2 duration-base"
-          on:click={() => (location.href = "/players/" + row.getValue("username"))}
+          on:click={() => (location.href = "/players/" + row.original.playerId)}
         >
           {#each row.getVisibleCells() as cell}
             <td class="p-base">
