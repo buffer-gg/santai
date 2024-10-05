@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { cn } from "../../utils/cn";
-  export let className: string = "";
-  export let searchValueBind: any | undefined;
-  export let handleKeyUpBind: any | undefined;
+import { cn } from "../../utils/cn";
+export let className: string = "";
+export let searchValueBind: any | undefined;
+export let handleKeyUpBind: any | undefined;
 </script>
 
 <div class="flex flew-row w-full gap-small">

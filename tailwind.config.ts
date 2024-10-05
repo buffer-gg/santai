@@ -1,7 +1,7 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss";
 
 export default {
-	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+	content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
 	theme: {
 		extend: {
 			colors: {
@@ -29,19 +29,19 @@ export default {
 			},
 
 			skew: {
-				30: "30deg" 
+				30: "30deg",
 			},
 
 			borderRadius: {
 				small: "var(--radius-small)",
 				base: "var(--radius-base)",
-				large: "var(--radius-large)"
+				large: "var(--radius-large)",
 			},
 
 			spacing: {
 				small: "var(--spacing-small)",
 				base: "var(--spacing-base)",
-				large: "var(--spacing-large)"
+				large: "var(--spacing-large)",
 			},
 
 			transitionDuration: {
@@ -51,4 +51,4 @@ export default {
 		},
 	},
 	plugins: [],
-} satisfies Config
+} satisfies Config;

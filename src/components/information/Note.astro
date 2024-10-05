@@ -1,17 +1,17 @@
 ---
-import { cn } from '../../utils/cn';
+import { cn } from "../../utils/cn";
 
 export enum InfoType {
-    Helpful,
-    Warning,
-    Destructive
+	Helpful,
+	Warning,
+	Destructive,
 }
 
 interface Props {
-    type: InfoType;
-    title?: string;
-    body: string;
-    class?: string;
+	type: InfoType;
+	title?: string;
+	body: string;
+	class?: string;
 }
 
 const { class: className, type, body, title = "Note" } = Astro.props;
