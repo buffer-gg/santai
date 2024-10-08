@@ -29,6 +29,15 @@
 		--duration-base: 0.14s;
 	}
 
+	html {
+		font-family: "Inter", sans-serif;
+	}
+
+	@font-face {
+		font-family: "Inter";
+		src: url("/fonts/Inter/Inter-VariableFont_slnt,wght.ttf") format("woff2");
+	}
+
 	@font-face {
 		font-family: "Planet Kosmos";
 		src: url("/fonts/PlanetKosmos/planetkosmos.ttf") format("woff2");
