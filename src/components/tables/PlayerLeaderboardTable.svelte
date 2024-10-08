@@ -6,6 +6,26 @@
   import type PlayerStats from "../../utils/types/playerStats";
 
   export let playerRows: PlayerStats[];
+  export let sliceSize: number = 25;
+  let playerRowSlices: PlayerStats[][] = [];
+
+  for (let i = 0; i < playerRows.length; i += sliceSize) {
+    const slice: PlayerStats[] = playerRows.slice(i, i + sliceSize);
+    playerRowSlices.push(slice);
+  }
+
+  playerRows = [];
+
+  const handleInfiniteScroll = () => {
+    const endOfPage = window.innerHeight + window.scrollY >= document.body.offsetHeight;
+
+    if (endOfPage) {
+      playerRows.concat(playerRowSlices[0]);
+      playerRowSlices.shift();
+    }
+  };
+
+  window.addEventListener("scroll", handleInfiniteScroll);
 
   const defaultData: PlayerStats[] = playerRows;
 
