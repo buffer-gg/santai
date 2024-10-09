@@ -43,14 +43,14 @@ const sponsors = Object.values(sponsorStats)?.sort(
 </ExpandableCard>
 
 <script>
-  const toggleButton = document.getElementById('toggle-sponsors');
-  const card = toggleButton.closest('.expandable-card');
-  const arrow = toggleButton.querySelector('span');
-  const sponsorStats = document.getElementById('sponsor-stats');
-  const sponsorRows = sponsorStats.querySelectorAll('.sponsor-row');
+  const toggleButton = document.getElementById('toggle-sponsors') as HTMLButtonElement;
+  const card = toggleButton?.closest('.expandable-card') as HTMLElement;
+  const arrow = toggleButton?.querySelector('span') as HTMLSpanElement;
+  const sponsorStats = document.getElementById('sponsor-stats') as HTMLElement;
+  const sponsorRows = sponsorStats?.querySelectorAll('.sponsor-row') as NodeListOf<HTMLElement>;
 
-  function updateVisibility(isExpanded) {
-    sponsorRows.forEach((row, index) => {
+  function updateVisibility(isExpanded: boolean) {
+    sponsorRows?.forEach((row, index) => {
       if (index < 3 || isExpanded) {
         row.classList.remove('hidden');
       } else {
@@ -59,13 +59,13 @@ const sponsors = Object.values(sponsorStats)?.sort(
     });
   }
 
-  toggleButton.addEventListener('click', () => {
-    const isExpanded = card.getAttribute('data-expanded') === 'true';
+  toggleButton?.addEventListener('click', () => {
+    const isExpanded = card?.getAttribute('data-expanded') === 'true';
     const newExpandedState = !isExpanded;
-    card.setAttribute('data-expanded', newExpandedState.toString());
-    arrow.textContent = newExpandedState ? '▲' : '▼';
-    toggleButton.textContent = newExpandedState ? 'Show Less' : 'Show All';
-    toggleButton.appendChild(arrow);
+    card?.setAttribute('data-expanded', newExpandedState.toString());
+    if (arrow) arrow.textContent = newExpandedState ? '▲' : '▼';
+    if (toggleButton) toggleButton.textContent = newExpandedState ? 'Show Less' : 'Show All';
+    if (arrow) toggleButton?.appendChild(arrow);
     updateVisibility(newExpandedState);
   });
 

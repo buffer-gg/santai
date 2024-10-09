@@ -1,7 +1,7 @@
 "use client";
 import { Area, AreaChart, ResponsiveContainer, YAxis } from "recharts";
 
-type ChartDataItem = Record<string, number | string>;
+type ChartDataItem = Record<string, number | string | Date>;
 
 interface CardChartProps {
 	chartData: ChartDataItem[];
