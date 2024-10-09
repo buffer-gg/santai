@@ -1,0 +1,198 @@
+---
+import type { PlayerFullProfile } from "../../utils/types/wavescan.types";
+import CardChart from "./CardChart";
+import { Image } from "astro:assets";
+interface Props {
+	player: PlayerFullProfile;
+}
+const { player }: { player: PlayerFullProfile } = Astro.props;
+
+const santaiRatingChartData = player?.matches
+	?.map((match, index) => {
+		if (index < 10) {
+			return {
+				date: match?.match_date,
+				rank_rating:
+					match?.player_team?.players?.find(
+						(match_player) => match_player.id === player.id,
+					)?.ranked_rating ?? 0,
+			};
+		} else {
+			return null;
+		}
+	})
+	?.filter((item) => item !== null)
+	?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+const adrChartData = player?.matches
+	?.map((match, index) => {
+		if (index < 10) {
+			return {
+				date: match.match_date,
+				adr: match?.player_team?.players?.find(
+					(match_player) => match_player.id === player.id,
+				)?.damage_dealt
+					? (match?.player_team?.players?.find(
+							(match_player) => match_player.id === player.id,
+						)?.damage_dealt ?? 0) / match?.player_team?.rounds_played
+					: 0,
+			};
+		} else {
+			return null;
+		}
+	})
+	?.filter((item) => item !== null)
+	?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+function getRankName(rankId: number): string {
+	switch (rankId) {
+		case 0:
+			return "Unranked";
+		case 1:
+			return "Bronze 1";
+		case 2:
+			return "Bronze 2";
+		case 3:
+			return "Bronze 3";
+		case 4:
+			return "Bronze 4";
+		case 5:
+			return "Silver 1";
+		case 6:
+			return "Silver 2";
+		case 7:
+			return "Silver 3";
+		case 8:
+			return "Silver 4";
+		case 9:
+			return "Gold 1";
+		case 10:
+			return "Gold 2";
+		case 11:
+			return "Gold 3";
+		case 12:
+			return "Gold 4";
+		case 13:
+			return "Platinum 1";
+		case 14:
+			return "Platinum 2";
+		case 15:
+			return "Platinum 3";
+		case 16:
+			return "Platinum 4";
+		case 17:
+			return "Emerald 1";
+		case 18:
+			return "Emerald 2";
+		case 19:
+			return "Emerald 3";
+		case 20:
+			return "Emerald 4";
+		case 21:
+			return "Ruby 1";
+		case 22:
+			return "Ruby 2";
+		case 23:
+			return "Ruby 3";
+		case 24:
+			return "Ruby 4";
+		case 25:
+			return "Diamond 1";
+		case 26:
+			return "Diamond 2";
+		case 27:
+			return "Diamond 3";
+		case 28:
+			return "Diamond 4";
+		case 29:
+			return "Champion";
+		default:
+			return "Unranked";
+	}
+}
+
+function getSantaiRating(santaiRating: number, rank_id: number): number {
+  if (rank_id === 29) {
+    return santaiRating - 4650;
+  } else {
+    return santaiRating;
+  }
+}
+---
+
+<div class="container mx-auto max-w-[24rem]"> 
+    <div class="bg-[#09090b] rounded-lg overflow-hidden filter drop-shadow-lg">
+      <div class="relative">
+        <div class="absolute top-2 left-2 flex items-center">
+          <span class="text-yellow-400 mr-2"></span>
+          <span class="text-sm font-bold uppercase text-[#f9c61f] bg-gradient-to-r from-[#f9c61f] to-[#ffffff] bg-clip-text text-transparent">Santai Champion</span>
+        </div>
+        <div class="h-64">
+          <!-- Player image will go here -->
+          <img src={player?.steam_profile?.avatar?.large ? player.steam_profile.avatar.large : "/images/default-avatar.png"} alt={"Player avatar"} class="w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent pointer-events-none"></div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#09090b] p-4">
+          <h1 class="text-5xl text-light-1 font-dharmagothic font-bold mb-1 text-center">{player.name}</h1>
+        </div>
+      </div>
+      
+      <div class="p-4">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="bg-[#131315] rounded-lg p-3">
+            <h6 class="text-[#f9c61f] text-xs uppercase tracking-wider mb-1">Santai Rating</h6>
+            <div class="flex items-end justify-between">
+              <h5 class="text-light-2 font-dharmagothic text-2xl font-bold tracking-wide">{player?.stats?.rank_rating ? getSantaiRating(player.stats.rank_rating, player.stats.current_solo_rank ?? 0) : 0}</h5>
+              <!-- <span class="text-green-500 text-sm">+52</span> -->
+            </div>
+            <div class="w-full h-8 mt-2">
+              <CardChart chartData={santaiRatingChartData} dataKey="rank_rating" client:load />
+            </div>
+          </div>
+          <div class="bg-[#131315] rounded-lg p-3">
+            <h6 class="text-[#f9c61f] text-xs uppercase tracking-wider mb-1">ADR</h6>
+            <div class="flex items-end justify-between">
+              <h5 class="text-light-2 font-dharmagothic text-2xl font-bold tracking-wide">{player?.extended_stats?.season_stats?.['2024-S0']?.average_damage_per_round ? player.extended_stats.season_stats['2024-S0'].average_damage_per_round.toFixed(2) : 0}</h5>
+              <!-- <span class="text-green-500 text-sm">+13.53</span> -->
+            </div>
+            <div class="w-full h-8 mt-2">
+              <CardChart chartData={adrChartData} dataKey="adr" client:load />
+            </div>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-[#131315] rounded-lg p-4">
+            <h6 class="text-[#f9c61f] text-sm uppercase tracking-wider mb-2">Rank</h6>
+            <div class="flex justify-center items-center h-32">
+              <div class="text-center flex flex-col items-center">
+                 <img src={`/images/solo-ranks/${getRankName(player.stats.current_solo_rank ?? 0).replace(' ', '-')}.png`} alt="Player Rank" class="w-16 h-16" />
+                <span class="text-light-2 text-sm">Solo {getRankName(player.stats.current_solo_rank ?? 0)}</span>
+              </div>
+            </div>
+          </div>
+          <div class="bg-[#131315] rounded-lg p-4">
+            <h6 class="text-[#f9c61f] text-sm uppercase tracking-wider mb-2">Season Stats</h6>
+            <div class="space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="text-light-2 text-sm">Win %</span>
+                <span class="text-light-1 font-bold">{player?.extended_stats?.season_stats?.['2024-S0']?.average_win_percentage ? player.extended_stats.season_stats['2024-S0'].average_win_percentage.toFixed(2) : 0}%</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-light-2 text-sm">K/D Ratio</span>
+                <span class="text-light-1 font-bold">{(player?.extended_stats?.season_stats?.['2024-S0']?.total_kills && player?.extended_stats?.season_stats?.['2024-S0']?.total_deaths) ? (player.extended_stats.season_stats['2024-S0'].total_kills / player.extended_stats.season_stats['2024-S0'].total_deaths).toFixed(2) : 0}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-light-2 text-sm">Top Damage</span>
+                <span class="text-light-1 font-bold">{player?.extended_stats?.season_stats?.['2024-S0']?.top_damage_dealt ? player.extended_stats.season_stats['2024-S0'].top_damage_dealt : 0}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-light-2 text-sm">Top Kills</span>
+                <span class="text-light-1 font-bold">{player?.extended_stats?.season_stats?.['2024-S0']?.top_kills ? player.extended_stats.season_stats['2024-S0'].top_kills : 0}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
