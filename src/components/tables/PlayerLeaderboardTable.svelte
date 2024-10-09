@@ -20,7 +20,9 @@ import type PlayerStats from "../../utils/types/playerStats";
       }
     };
 
-  window.addEventListener("scroll", handleInfiniteScroll);
+onMount(() => {
+	window.addEventListener("scroll", handleInfiniteScroll);
+});
 
 const defaultData: PlayerStats[] = playerRows;
 

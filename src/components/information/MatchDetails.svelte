@@ -1,29 +1,29 @@
 <script lang="ts">
-    import { cubicOut } from "svelte/easing";
-    import { slide } from "svelte/transition";
-    import type { PlayerMatch, Match_Team } from "../../utils/types/wavescan.types";
-    
-    export let match: PlayerMatch;
-    
-    function getScoreColor(score: number): string {
-        if (score >= 300) return "teal-400";
-        if (score >= 250) return "emerald-200";
-        if (score >= 200) return "slate-300";
-        if (score >= 150) return "rose-300";
-        return "red-500";
-    }
-    
-    export let selectedMatchTab: "scoreboard" | "statistics" = "scoreboard";
-    
-    function calculateADR(player: Match_Team['players'][0]): number {
-        return Math.round(player.damage_dealt / match.rounds);
-    }
-    
-    function getKDA(player: Match_Team['players'][0]): string {
-        return `${player.kills} / ${player.deaths} / ${player.assists}`
-    }
+import { cubicOut } from "svelte/easing";
+import { slide } from "svelte/transition";
+import type { PlayerMatch, Match_Team } from "../../utils/types/wavescan.types";
 
-    function getRankName(rankId: number): string {
+export let match: PlayerMatch;
+
+function getScoreColor(score: number): string {
+	if (score >= 300) return "teal-400";
+	if (score >= 250) return "emerald-200";
+	if (score >= 200) return "slate-300";
+	if (score >= 150) return "rose-300";
+	return "red-500";
+}
+
+export let selectedMatchTab: "scoreboard" | "statistics" = "scoreboard";
+
+function calculateADR(player: Match_Team["players"][0]): number {
+	return Math.round(player.damage_dealt / match.rounds);
+}
+
+function getKDA(player: Match_Team["players"][0]): string {
+	return `${player.kills} / ${player.deaths} / ${player.assists}`;
+}
+
+function getRankName(rankId: number): string {
 	switch (rankId) {
 		case 0:
 			return "Unranked";
@@ -90,9 +90,9 @@
 	}
 }
 function getRowClass(index: number, isPlayerTeam: boolean): string {
-    const baseColor = isPlayerTeam ? 'bg-zinc-800' : 'bg-zinc-900';
-    return `${index % 2 === 0 ? baseColor : `${baseColor}/80`} flex flex-wrap items-center px-2 py-1 text-center`;
-  }
+	const baseColor = isPlayerTeam ? "bg-zinc-800" : "bg-zinc-900";
+	return `${index % 2 === 0 ? baseColor : `${baseColor}/80`} flex flex-wrap items-center px-2 py-1 text-center`;
+}
 </script>
 
 <div transition:slide={{ duration: 300, easing: cubicOut }} class="border-t-neutral-600/[0.25] border-t-2 grid border-solid gap-2 p-2 w-full">

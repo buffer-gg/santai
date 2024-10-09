@@ -1,31 +1,31 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import MatchDetails from "./MatchDetails.svelte";
-    import type { PlayerFullProfile } from "../../utils/types/wavescan.types";
-    
-    export let playerFullProfile: PlayerFullProfile;
-    
-    onMount(async () => {
-        // In a real implementation, you would fetch data here
-        // const response = await fetch(`/api/matchHistory/${playerId}`);
-        // const data = await response.json();
-        // matches = data.matches;
-        // last20Stats = data.last20Stats;
-    });
-    
-    // // Make matches reactive
-    // $: reactiveMatches = matches.map(match => ({
-    //     ...match,
-    //     expanded: false
-    // }));
-    
-    function toggleMatchDetails(match) {
-        match.expanded = !match.expanded;
-        // Force update of reactiveMatches
-        reactiveMatches = [...reactiveMatches];
-    }
+import { onMount } from "svelte";
+import MatchDetails from "./MatchDetails.svelte";
+import type { PlayerFullProfile } from "../../utils/types/wavescan.types";
 
-    function getMapName(
+export let playerFullProfile: PlayerFullProfile;
+
+onMount(async () => {
+	// In a real implementation, you would fetch data here
+	// const response = await fetch(`/api/matchHistory/${playerId}`);
+	// const data = await response.json();
+	// matches = data.matches;
+	// last20Stats = data.last20Stats;
+});
+
+// // Make matches reactive
+// $: reactiveMatches = matches.map(match => ({
+//     ...match,
+//     expanded: false
+// }));
+
+function toggleMatchDetails(match) {
+	match.expanded = !match.expanded;
+	// Force update of reactiveMatches
+	reactiveMatches = [...reactiveMatches];
+}
+
+function getMapName(
 	map: string,
 ): "Commons" | "Metro" | "Mill" | "Skyway" | "Unknown" {
 	switch (map.toLowerCase()) {
@@ -41,34 +41,39 @@
 			return "Unknown";
 	}
 }
-    
-    // export let wins = 11;
-    // export let defeats = 9;
-    
-    // $: totalGames = wins + defeats;
 
-    let reactiveMatches = playerFullProfile?.matches?.map(match => ({
-        ...match,
-        expanded: false,
-        result: match.winner === -1 ? 'Draw' : match.winner === match.player_team?.team_index ? 'Victory' : 'Defeat'
-    }));
-    
-    const last20Wins =
-        playerFullProfile?.extended_stats?.last_20_matches_avg_stats?.total_wins;
-    const last20Losses =
-        playerFullProfile?.extended_stats?.last_20_matches_avg_stats?.total_losses;
-    const last20Winrate =
-        playerFullProfile?.extended_stats?.last_20_matches_avg_stats
-            ?.average_win_percentage ?? 0;
-    const last20Kd =
-        (playerFullProfile?.extended_stats?.last_20_matches_avg_stats
-            ?.average_kills_per_round ?? 0) /
-        (playerFullProfile?.extended_stats?.last_20_matches_avg_stats
-            ?.average_deaths_per_round ?? 1);
-    const last20Adr =
-        playerFullProfile?.extended_stats?.last_20_matches_avg_stats
-            ?.average_damage_per_round ?? 0;
-    </script>
+// export let wins = 11;
+// export let defeats = 9;
+
+// $: totalGames = wins + defeats;
+
+let reactiveMatches = playerFullProfile?.matches?.map((match) => ({
+	...match,
+	expanded: false,
+	result:
+		match.winner === -1
+			? "Draw"
+			: match.winner === match.player_team?.team_index
+				? "Victory"
+				: "Defeat",
+}));
+
+const last20Wins =
+	playerFullProfile?.extended_stats?.last_20_matches_avg_stats?.total_wins;
+const last20Losses =
+	playerFullProfile?.extended_stats?.last_20_matches_avg_stats?.total_losses;
+const last20Winrate =
+	playerFullProfile?.extended_stats?.last_20_matches_avg_stats
+		?.average_win_percentage ?? 0;
+const last20Kd =
+	(playerFullProfile?.extended_stats?.last_20_matches_avg_stats
+		?.average_kills_per_round ?? 0) /
+	(playerFullProfile?.extended_stats?.last_20_matches_avg_stats
+		?.average_deaths_per_round ?? 1);
+const last20Adr =
+	playerFullProfile?.extended_stats?.last_20_matches_avg_stats
+		?.average_damage_per_round ?? 0;
+</script>
     
     <div class="last-20-stats bg-[#09090b] rounded-lg p-4 mb-4 border-[#131315] border-2">
         <div class="flex flex-col lg:flex-row w-full">
