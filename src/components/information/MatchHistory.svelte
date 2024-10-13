@@ -1,29 +1,61 @@
 <script lang="ts">
-import { onMount } from "svelte";
+import { onMount, onDestroy } from "svelte";
 import MatchDetails from "./MatchDetails.svelte";
-import type { PlayerFullProfile } from "../../utils/types/wavescan.types";
+import type {
+	Match_Team,
+	PlayerFullProfile,
+} from "../../utils/types/wavescan.types";
+import { emitSocketEvent } from "../../utils/socket-handler";
+    import LoadingBar from "../cosmetic/LoadingBar.svelte";
 
 export let playerFullProfile: PlayerFullProfile;
+export let isLoading = false;
+export let loadingErrorMessage: string = "";
+export let hasError = false;
 
-onMount(async () => {
-	// In a real implementation, you would fetch data here
-	// const response = await fetch(`/api/matchHistory/${playerId}`);
-	// const data = await response.json();
-	// matches = data.matches;
-	// last20Stats = data.last20Stats;
-});
-
-// // Make matches reactive
-// $: reactiveMatches = matches.map(match => ({
-//     ...match,
-//     expanded: false
-// }));
-
-function toggleMatchDetails(match) {
+function toggleMatchDetails(match: {
+	expanded: any;
+	result?: string;
+	id?: string;
+	region?: string;
+	is_ranked?: boolean;
+	queue_name?: string;
+	map?: string;
+	game_mode?: string;
+	surrended_team?: number;
+	is_abandoned?: boolean;
+	match_date?: Date;
+	rounds?: number;
+	winner?: 0 | 1 | -1;
+	player_team?: Match_Team;
+	opponent_team?: Match_Team | null;
+}) {
 	match.expanded = !match.expanded;
 	// Force update of reactiveMatches
 	reactiveMatches = [...reactiveMatches];
 }
+
+// If the match was played today, return the time, otherwise return the date
+const getDate = (date: string | Date) => {
+	const matchDate = new Date(date);
+	const now = new Date();
+	const diffTime = now.getTime() - matchDate.getTime();
+	const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+	const diffMinutes = Math.floor(diffTime / (1000 * 60));
+	if (diffMinutes <= 60) {
+		const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+		return rtf.format(-diffMinutes, "minute");
+	}
+	if (diffHours <= 24) {
+		const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+		return rtf.format(-diffHours, "hour");
+	}
+	return matchDate.toLocaleDateString("en-US", {
+		month: "short",
+		day: "numeric",
+		year: "numeric",
+	});
+};
 
 function getMapName(
 	map: string,
@@ -42,11 +74,6 @@ function getMapName(
 	}
 }
 
-// export let wins = 11;
-// export let defeats = 9;
-
-// $: totalGames = wins + defeats;
-
 let reactiveMatches = playerFullProfile?.matches?.map((match) => ({
 	...match,
 	expanded: false,
@@ -58,21 +85,156 @@ let reactiveMatches = playerFullProfile?.matches?.map((match) => ({
 				: "Defeat",
 }));
 
-const last20Wins =
+let last20Wins =
 	playerFullProfile?.extended_stats?.last_20_matches_avg_stats?.total_wins;
-const last20Losses =
+let last20Losses =
 	playerFullProfile?.extended_stats?.last_20_matches_avg_stats?.total_losses;
-const last20Winrate =
+let last20Winrate =
 	playerFullProfile?.extended_stats?.last_20_matches_avg_stats
 		?.average_win_percentage ?? 0;
-const last20Kd =
+let last20Kd =
 	(playerFullProfile?.extended_stats?.last_20_matches_avg_stats
 		?.average_kills_per_round ?? 0) /
 	(playerFullProfile?.extended_stats?.last_20_matches_avg_stats
 		?.average_deaths_per_round ?? 1);
-const last20Adr =
+let last20Adr =
 	playerFullProfile?.extended_stats?.last_20_matches_avg_stats
 		?.average_damage_per_round ?? 0;
+
+let isRefreshing = false;
+let isAddingMatch = false;
+let showAddMatchModal = false;
+let matchIdInput = "";
+let addMatchError = "";
+let previousMatchIds: string[] = [];
+let showPreviousIds = false;
+let showMatchIdHelp = false;
+
+function toggleMatchIdHelp() {
+	showMatchIdHelp = !showMatchIdHelp;
+}
+
+onMount(() => {
+	// Get Previous Match IDs
+	const storedIds = localStorage.getItem("previousMatchIds");
+	if (storedIds) {
+		previousMatchIds = JSON.parse(storedIds);
+	}
+
+	window.addEventListener("playerDataUpdate", handlePlayerDataUpdate);
+});
+
+onDestroy(() => {
+	window.removeEventListener("playerDataUpdate", handlePlayerDataUpdate);
+});
+
+async function refreshMatches() {
+	isRefreshing = true;
+	const lastRefreshTime = localStorage.getItem(
+		`lastRefresh_${playerFullProfile.id}`,
+	);
+	const currentTime = new Date().getTime();
+
+	if (
+		!lastRefreshTime ||
+		currentTime - Number.parseInt(lastRefreshTime) > 600000
+	) {
+		// Fetch matches from database
+		try {
+			const response = await fetch(
+				`https://wavescan-production.up.railway.app/api/v1/player/${playerFullProfile.id}/full_profile`,
+			);
+			if (!response.ok) throw new Error("Failed to fetch matches");
+			playerFullProfile = await response.json();
+			reactiveMatches = playerFullProfile.matches.map((match) => ({
+				...match,
+				expanded: false,
+				result:
+					match.winner === -1
+						? "Draw"
+						: match.winner === match.player_team?.team_index
+							? "Victory"
+							: "Defeat",
+			}));
+			localStorage.setItem(
+				`lastRefresh_${playerFullProfile.id}`,
+				currentTime.toString(),
+			);
+		} catch (error) {
+			console.error("Error fetching matches:", error);
+		}
+
+		isRefreshing = false;
+	}
+	isRefreshing = false;
+}
+
+async function addMatch() {
+	isAddingMatch = true;
+	addMatchError = "";
+	try {
+		// Check if match ID is valid
+		const matchId = matchIdInput?.toLowerCase()?.trim()?.replace(" ", "");
+		const checkResponse = await fetch(
+			`https://wavescan-production.up.railway.app/api/v1/match/${matchId}/check`,
+		);
+		if (!checkResponse.ok) throw new Error("Invalid match ID");
+		const checkResponseJson = await checkResponse.json();
+		if (checkResponseJson.success === false || checkResponseJson.error)
+			throw new Error(checkResponseJson.error);
+
+		// If valid, dump the match
+		const addResponse = await fetch(
+			`https://wavescan-production.up.railway.app/api/v1/match/${matchId}/add`,
+		);
+		if (!addResponse.ok) throw new Error("Failed to add match");
+		showAddMatchModal = false;
+		await refreshMatches();
+	} catch (error) {
+		console.error("Error adding match:", error);
+		addMatchError = error instanceof Error ? error.message : "Unknown error";
+	}
+
+	// After attempting to add a match, store the ID
+	if (matchIdInput && !previousMatchIds.includes(matchIdInput)) {
+		previousMatchIds = [matchIdInput, ...previousMatchIds.slice(0, 4)]; // Keep last 5 IDs
+		localStorage.setItem("previousMatchIds", JSON.stringify(previousMatchIds));
+	}
+
+	isAddingMatch = false;
+}
+
+function selectPreviousId(id: string) {
+	matchIdInput = id;
+	showPreviousIds = false;
+}
+
+function clearPreviousMatchIds() {
+	previousMatchIds = [];
+	localStorage.removeItem("previousMatchIds");
+	showPreviousIds = false;
+}
+
+function handlePlayerDataUpdate(event: CustomEvent) {
+	console.log("[MatchHistory] Player data updated", event);
+	const updatedPlayerFullProfile = event.detail;
+	playerFullProfile = updatedPlayerFullProfile;
+	reactiveMatches = updatedPlayerFullProfile.matches.map((match) => ({
+		...match,
+		expanded: false,
+		result:
+			match.winner === -1
+				? "Draw"
+				: match.winner === match.player_team?.team_index
+					? "Victory"
+					: "Defeat",
+	}));
+	last20Wins = updatedPlayerFullProfile.extended_stats?.last_20_matches_avg_stats?.total_wins;
+	last20Losses = updatedPlayerFullProfile.extended_stats?.last_20_matches_avg_stats?.total_losses;
+	last20Winrate = updatedPlayerFullProfile.extended_stats?.last_20_matches_avg_stats?.average_win_percentage ?? 0;
+	last20Kd = (updatedPlayerFullProfile.extended_stats?.last_20_matches_avg_stats?.average_kills_per_round ?? 0) / (updatedPlayerFullProfile.extended_stats?.last_20_matches_avg_stats?.average_deaths_per_round ?? 1);
+	last20Adr = updatedPlayerFullProfile.extended_stats?.last_20_matches_avg_stats?.average_damage_per_round ?? 0;
+}
 </script>
     
     <div class="last-20-stats bg-[#09090b] rounded-lg p-4 mb-4 border-[#131315] border-2">
@@ -131,6 +293,122 @@ const last20Adr =
         </div>
       </div>
 
+      <div class="flex justify-end space-x-2 mb-4">
+        <button
+          on:click={refreshMatches}
+          class="px-4 py-2 bg-[#131315] text-[#f9c61f] rounded-md flex items-center border border-[#f9c61f] hover:bg-[#f9c61f] hover:text-[#131315] transition-colors duration-300"
+          disabled={isRefreshing}
+        >
+          {#if isRefreshing}
+            <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          {:else}
+            <svg class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+            </svg>
+          {/if}
+          Refresh Matches
+        </button>
+        
+        <button
+          on:click={() => showAddMatchModal = true}
+          class="px-4 py-2 bg-[#131315] text-[#f9c61f] rounded-md flex items-center border border-[#f9c61f] hover:bg-[#f9c61f] hover:text-[#131315] transition-colors duration-300"
+        >
+          <svg class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+          </svg>
+          Add Match
+        </button>
+      </div>
+      
+      {#if showAddMatchModal}
+      <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-[#09090b] rounded-lg p-6 w-full max-w-xl mx-auto">
+          <h2 class="text-xl font-bold mb-4 text-[#f9c61f]">Add Match</h2>
+          <div class="relative mb-4">
+            <input
+              type="text"
+              bind:value={matchIdInput}
+              placeholder="Enter match ID"
+              class="w-full px-3 py-2 pr-10 bg-[#131315] border border-[#f9c61f] rounded-md text-light-2 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#f9c61f]"
+            >
+            <button
+              on:click={toggleMatchIdHelp}
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 text-[#f9c61f] hover:text-[#e6b824] transition-colors duration-300"
+              title="How to get match ID"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+          {#if showMatchIdHelp}
+            <div class="mb-4">
+              <img 
+                src="/images/info-gifs/how-to-add-match.gif" 
+                alt="How to get match ID" 
+                class="rounded-md w-full"
+                loading="lazy"
+              >
+            </div>
+          {/if}
+          {#if previousMatchIds.length > 0}
+            <div class="relative mb-4">
+              <div class="flex justify-between items-center mb-2">
+                <button
+                  on:click={() => showPreviousIds = !showPreviousIds}
+                  class="text-left px-3 py-2 bg-[#131315] border border-[#f9c61f] rounded-md text-light-2 focus:outline-none focus:ring-2 focus:ring-[#f9c61f] flex items-center"
+                >
+                  <span>Previous Match IDs</span>
+                  <svg class="w-5 h-5 ml-2 transform transition-transform duration-300 {showPreviousIds ? 'rotate-180' : ''}" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+                <button
+                  on:click={clearPreviousMatchIds}
+                  class="px-3 py-2 bg-[#131315] text-red-500 rounded-md border border-red-500 hover:bg-red-500 hover:text-[#131315] transition-colors duration-300"
+                >
+                  Clear All
+                </button>
+              </div>
+              {#if showPreviousIds}
+                <div class="absolute z-10 w-full mt-1 bg-[#131315] border border-[#f9c61f] rounded-md shadow-lg max-h-32 overflow-y-auto">
+                  {#each previousMatchIds as id}
+                    <button
+                      on:click={() => selectPreviousId(id)}
+                      class="w-full text-light-2 text-left px-3 py-2 hover:bg-[#f9c61f] hover:text-[#131315] transition-colors duration-300"
+                    >
+                      {id}
+                    </button>
+                  {/each}
+                </div>
+              {/if}
+            </div>
+          {/if}
+          {#if addMatchError}
+            <p class="text-red-500 mb-4">{addMatchError}</p>
+          {/if}
+          <div class="flex justify-end space-x-2">
+            <button
+              on:click={() => showAddMatchModal = false}
+              class="px-4 py-2 bg-[#131315] text-[#f9c61f] rounded-md border border-[#f9c61f] hover:bg-[#f9c61f] hover:text-[#131315] transition-colors duration-300"
+            >
+              Cancel
+            </button>
+            <button
+              on:click={addMatch}
+              class="px-4 py-2 bg-[#f9c61f] text-[#131315] rounded-md hover:bg-[#e6b824] transition-colors duration-300"
+              disabled={isAddingMatch}
+            >
+              {isAddingMatch ? 'Adding...' : 'Add Match'}
+            </button>
+          </div>
+        </div>
+      </div>
+    {/if}
+    <LoadingBar {isLoading} />
   <div class="matches space-y-2">
     {#each reactiveMatches as match (match.id)}
     <div
@@ -160,7 +438,7 @@ const last20Adr =
                 <span class="text-xs opacity-50">•</span>
                 <span class="text-xs">{match.queue_name}</span>
                 <span class="text-xs opacity-50">•</span>
-                <span class="text-xs">{new Date(match.match_date).toLocaleDateString()}</span>
+                <span class="text-xs">{getDate(match.match_date)}</span>
               </h5>
               <div class="grid grid-cols-4 gap-2">
                 <div class="flex flex-col gap-2">

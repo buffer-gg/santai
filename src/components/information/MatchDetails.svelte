@@ -137,4 +137,7 @@ function getRowClass(index: number, isPlayerTeam: boolean): string {
       {/if}
     </div>
   </div>
+  <div class="bg-zinc-800 rounded-md p-2 mt-2">
+    <p class="text-xs text-zinc-400">Match ID: <span class="text-[#f9c61f] font-semibold">{match.id}</span></p>
+  </div>
 </div>

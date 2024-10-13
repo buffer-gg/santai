@@ -5,20 +5,22 @@ import type { ColumnDef, TableOptions } from "@tanstack/svelte-table";
 import SearchBar from "../navigation/SearchBar.svelte";
 import type PlayerStats from "../../utils/types/playerStats";
 
-  export let playerRows: PlayerStats[] = [];
-  let displayedPlayerRows: PlayerStats[] = [];
+export let playerRows: PlayerStats[] = [];
+let displayedPlayerRows: PlayerStats[] = [];
 
-  onMount(() => {
-    const handleInfiniteScroll = () => {
-      const endOfPage = window.innerHeight + Math.round(window.scrollY) >= document.body.offsetHeight;
+onMount(() => {
+	const handleInfiniteScroll = () => {
+		const endOfPage =
+			window.innerHeight + Math.round(window.scrollY) >=
+			document.body.offsetHeight;
 
-      if (endOfPage) {
-        for (let i = 0; i < 20; i++) {
-          displayedPlayerRows = [...displayedPlayerRows, playerRows[0]];
-          playerRows.shift();
-        }
-      }
-    };
+		if (endOfPage) {
+			for (let i = 0; i < 20; i++) {
+				displayedPlayerRows = [...displayedPlayerRows, playerRows[0]];
+				playerRows.shift();
+			}
+		}
+	};
 
 onMount(() => {
 	window.addEventListener("scroll", handleInfiniteScroll);

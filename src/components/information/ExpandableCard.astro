@@ -3,12 +3,13 @@ interface Props {
 	title: string;
 	class?: string;
 	initiallyExpanded?: boolean;
+	id?: string;
 }
 
-const { title, initiallyExpanded = false, class: className } = Astro.props;
+const { title, initiallyExpanded = false, class: className, id } = Astro.props;
 ---
 
-<div class={`expandable-card bg-[#09090b] rounded-lg overflow-hidden mb-4 ${className}`} data-expanded={initiallyExpanded}>
+<div id={id} class={`expandable-card bg-[#09090b] rounded-lg overflow-hidden mb-4 ${className}`} data-expanded={initiallyExpanded}>
   <div class="p-4 flex justify-between items-center">
     <h2 class="text-[#f9c61f] text-lg font-bold">{title}</h2>
   </div>

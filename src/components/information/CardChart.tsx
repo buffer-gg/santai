@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, YAxis } from "recharts";
 
 type ChartDataItem = Record<string, number | string | Date>;
@@ -10,13 +11,66 @@ interface CardChartProps {
 }
 
 export default function CardChart({
-	chartData,
+	chartData: initialChartData,
 	dataKey,
 	zoomFactor = 1.1,
 }: CardChartProps) {
+	const [chartData, setChartData] = useState(initialChartData);
+	useEffect(() => {
+		const handleChartUpdate = (event: CustomEvent) => {
+			console.log("[CardChart] Player data updated", event);
+			const updatedPlayerData = event.detail;
+			const newChartData = generateChartData(updatedPlayerData, dataKey);
+			setChartData(newChartData);
+		};
+
+		window.addEventListener("updateCharts", handleChartUpdate as EventListener);
+
+		return () => {
+			console.log("[CardChart] Removing updateCharts listener");
+			window.removeEventListener(
+				"updateCharts",
+				handleChartUpdate as EventListener,
+			);
+		};
+	}, [dataKey]);
+
+	function generateChartData(
+		playerData: any,
+		dataKey: string,
+	): ChartDataItem[] {
+		return playerData.matches
+			.slice(0, 10)
+			.map((match: any) => ({
+				date: match.match_date,
+				[dataKey]: calculateDataValue(match, dataKey),
+			}))
+			.sort(
+				(a: any, b: any) =>
+					new Date(a.date).getTime() - new Date(b.date).getTime(),
+			);
+	}
+
+	function calculateDataValue(match: any, dataKey: string): number {
+		// Implement this function based on your data structure
+		// For example:
+		if (dataKey === "rank_rating") {
+			return (
+				match.player_team.players.find((p: any) => p.id === match.player_id)
+					?.ranked_rating || 0
+			);
+		}
+		if (dataKey === "adr") {
+			return (
+				match.player_team.players.find((p: any) => p.id === match.player_id)
+					?.damage_dealt / match.player_team.rounds_played || 0
+			);
+		}
+		return 0;
+	}
 	const values = chartData
-		.map((item) => Number(item[dataKey]))
-		.filter((v) => !isNaN(v));
+		.map((item: any) => Number(item[dataKey]))
+		.filter((v: number) => !Number.isNaN(v));
 	const minValue = Math.min(...values);
 	const maxValue = Math.max(...values);
 	const padding = ((maxValue - minValue) * (zoomFactor - 1)) / 2;
