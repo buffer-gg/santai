@@ -5,22 +5,20 @@ import type { ColumnDef, TableOptions } from "@tanstack/svelte-table";
 import SearchBar from "../navigation/SearchBar.svelte";
 import type PlayerStats from "../../utils/types/playerStats";
 
-export let playerRows: PlayerStats[] = [];
-let displayedPlayerRows: PlayerStats[] = [];
+  export let playerRows: PlayerStats[] = [];
+  let displayedPlayerRows: PlayerStats[] = [];
 
-onMount(() => {
-	const handleInfiniteScroll = () => {
-		const endOfPage =
-			window.innerHeight + Math.round(window.scrollY) >=
-			document.body.offsetHeight;
+  onMount(() => {
+    const handleInfiniteScroll = () => {
+      const endOfPage = window.innerHeight + Math.round(window.scrollY) >= document.body.offsetHeight;
 
-		if (endOfPage) {
-			for (let i = 0; i < 20; i++) {
-				displayedPlayerRows = [...displayedPlayerRows, playerRows[0]];
-				playerRows.shift();
-			}
-		}
-	};
+      if (endOfPage) {
+        for (let i = 0; i < 20; i++) {
+          displayedPlayerRows = [...displayedPlayerRows, playerRows[0]];
+          playerRows.shift();
+        }
+      }
+    };
 
 onMount(() => {
 	window.addEventListener("scroll", handleInfiniteScroll);
@@ -28,23 +26,24 @@ onMount(() => {
 
 const defaultData: PlayerStats[] = playerRows;
 
-const defaultColumns: ColumnDef<PlayerStats>[] = [
-	{
-		accessorKey: "placement",
-		header: "#",
-		cell: (info) => info.getValue(),
-	},
-	{
-		accessorKey: "username",
-		header: "USERNAME",
-		cell: (info) => info.getValue(),
-	},
-	{
-		accessorKey: "soloRank",
-		header: "RANK",
-		cell: (info) => info.getValue(),
-	},
-];
+  const defaultColumns: ColumnDef<PlayerStats>[] = [
+    {
+      accessorKey: "placement",
+      header: "#",
+      cell: (info) => info.getValue(),
+    },
+    {
+      accessorKey: "username",
+      header: "USERNAME",
+      cell: (info) => info.getValue(),
+      enableGlobalFilter: true,
+    },
+    {
+      accessorKey: "soloRank",
+      header: "RANK",
+      cell: (info) => info.getValue(),
+    },
+  ];
 
 const options = writable<TableOptions<PlayerStats>>({
 	data: defaultData,
