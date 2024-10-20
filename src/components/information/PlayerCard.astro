@@ -323,7 +323,7 @@ function updatePlayerCard(playerData: any) {
     // Update Santai Champion title
 	const santaiTitleElement = playerCardContainer?.querySelector('#santai-title');
   if (santaiTitleElement) {
-    if (playerData.stats.current_solo_rank === 29 || playerData.stats.highest_team_rank === 29) {
+    if (playerData.stats.current_solo_rank >= 29 || playerData.stats.highest_team_rank >= 29) {
       santaiTitleElement.textContent = "Santai Champion";
       santaiTitleElement.classList.remove('hidden');
     } else {
@@ -346,11 +346,12 @@ function updatePlayerCard(playerData: any) {
 	}
 
 	function getSantaiRating(santaiRating: number, rank_id: number): number {
-	if (rank_id === 29) {
-		return santaiRating - 4650;
-	}
-		return santaiRating;
-	}
+		if (rank_id >= 29) {
+			// return santaiRating - 4650; // TODO: Figure out the math for calculating SR between ranks
+			return santaiRating;
+		}
+			return santaiRating;
+		}
 	}
 
 	// Ensure the initialization happens after the page has loaded
