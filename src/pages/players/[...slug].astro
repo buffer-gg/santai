@@ -6,67 +6,75 @@ import PlayerCard from "../../components/information/PlayerCard.astro";
 import SponsorStatsCard from "../../components/information/SponsorStatsCard.astro";
 import MapStatsCard from "../../components/information/MapStatsCard.astro";
 import MatchHistory from "../../components/information/MatchHistory.svelte";
-import LoadingSpinner from "../../components/cosmetic/LoadingSpinner.astro";
+import StatusContainer from "../../components/information/StatusContainer.svelte";
 
 const { slug } = Astro.params;
 const playerId = slug;
 
-let playerFullProfile;
+// Initialize with skeleton data
+let playerFullProfile = {
+  id: playerId,
+  name: "Loading...",
+  stats: {},
+  extended_stats: {
+    sponsor_stats: {},
+    map_stats: {},
+  },
+  matches: Array(20).fill({ match_date: new Date().toISOString(), player_team: { players: [{ id: playerId, ranked_rating: 0, damage_dealt: 0 }], rounds_played: 1 } }),
+};
+
 let isLoading = true;
-let dump_check: 'IN_PROGRESS' | 'SUCCESS' | 'FAILED' = 'IN_PROGRESS';
-
-try {
-	const response = await fetch(
-		`https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`,
-	);
-	playerFullProfile = await response.json();
-
- // Dump the player
-//  const dump_player_response = await fetch(`https://wavescan-production.up.railway.app/api/v1/player/${playerId}/dump`);
-  // const dump_player = await dump_player_response.json();
-  // if (!dump_player?.success) {
-  //   if (dump_player?.error_code === 'IN_PROGRESS') dump_check = 'IN_PROGRESS';
-  //   else dump_check = 'FAILED';
-  // } else dump_check = 'SUCCESS';
-
-} catch (error) {
-	console.error("Error fetching player data:", error);
-} finally {
-	isLoading = false;
-}
+let isPlayerNotFound = false;
+let loadingErrorMessage = "Currently fetching your player profile... If this takes longer than 10 seconds, please refresh the page.";
 ---
 
-<Layout pageTitle={playerFullProfile ? "Santai.GG | " + playerFullProfile.name : "Loading..."}>
+<Layout pageTitle="Loading Player...">
   <main class="p-4">
     <BackgroundImage imagePath="/src/assets/background-03.jpg" altText="Spectre Divide - player aiming a revolver." />
     <div class="max-w-screen-xl mx-auto">
-      {isLoading ? (
-        <div class="flex justify-center items-center h-screen">
-          <LoadingSpinner />
+      <StatusContainer client:load {playerId} />
+      <div class="flex flex-col md:flex-row md:space-x-2">
+        <div class="md:w-1/4 space-y-4 md:sticky md:top-4 md:self-start">
+          <PlayerCard player={playerFullProfile} isLoading={isLoading} />
+          <SponsorStatsCard sponsorStats={playerFullProfile.extended_stats.sponsor_stats} isLoading={isLoading} />
+          <MapStatsCard mapStats={playerFullProfile.extended_stats.map_stats} isLoading={isLoading} />
         </div>
-      ) : (
-        <div class="flex flex-col md:flex-row md:space-x-2">
-          <div class="md:w-1/4 space-y-4 md:sticky md:top-4 md:self-start">
-            <PlayerCard player={playerFullProfile} />
-            <SponsorStatsCard sponsorStats={playerFullProfile?.extended_stats?.sponsor_stats || {}} />
-            <MapStatsCard mapStats={playerFullProfile?.extended_stats?.map_stats || {}} />
-          </div>
-          <div class="md:w-3/4 mt-4 md:mt-0">
-            <MatchHistory playerFullProfile={playerFullProfile} client:only isLoading={dump_check === 'IN_PROGRESS'} />
-          </div>
+        <div class="md:w-3/4 mt-4 md:mt-0">
+          <MatchHistory 
+            playerFullProfile={playerFullProfile} 
+            client:only="svelte"
+            isLoading={isLoading}
+            hasError={isPlayerNotFound}
+            errorMessage={loadingErrorMessage}
+            on:dumpInitiated={() => {
+              document.querySelector('status-container')?.onDumpInitiated?.();
+            }}
+          />
         </div>
-      )}
+      </div>
     </div>
   </main>
 </Layout>
 
-<style>
-  @media (min-width: 768px) {
-    main {
-      min-height: 100vh;
+<script define:vars={{ playerId }}>
+async function fetchPlayerData() {
+  try {
+    const response = await fetch(`https://wavescan-production.up.railway.app/api/v1/player/${playerId}/full_profile`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    const playerData = await response.json();
+    window.dispatchEvent(new CustomEvent('playerDataUpdate', { detail: playerData }));
+  } catch (error) {
+    console.error("Error fetching player data:", error);
+    window.dispatchEvent(new CustomEvent('playerDataError', { detail: error.message }));
   }
-</style>
+}
+
+// Fetch data after the page has loaded
+window.addEventListener('load', fetchPlayerData);
+</script>
+
 <script is:inline define:vars={{ playerId }}>
   document.addEventListener('DOMContentLoaded', () => {
     console.log("DOMContentLoaded for playerId:", playerId);
@@ -77,18 +85,11 @@ try {
     });
 
     socket.on('connect', () => {
-      console.log('Socket.IO connection established');
+      console.log('Arc Sentry connection established');
     });
 
     socket.on('disconnect', () => {
       console.log('Socket.IO disconnected');
-    });
-
-    // Generic event handler
-    socket.onAny((eventName, ...args) => {
-      window.dispatchEvent(new CustomEvent('socketMessage', { 
-        detail: { event: eventName, data: args[0] }
-      }));
     });
 
     socket.on('new_match_info', (updatedPlayerFullProfile) => {

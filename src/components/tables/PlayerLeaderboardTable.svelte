@@ -43,6 +43,11 @@ const defaultData: PlayerStats[] = playerRows;
       header: "RANK",
       cell: (info) => info.getValue(),
     },
+    {
+      accessorKey: "rating",
+      header: "RANK RATING",
+      cell: (info) => info.getValue(),
+    },
   ];
 
 const options = writable<TableOptions<PlayerStats>>({

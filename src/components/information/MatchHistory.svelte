@@ -1,5 +1,5 @@
 <script lang="ts">
-import { onMount, onDestroy } from "svelte";
+import { onMount, onDestroy, createEventDispatcher } from "svelte";
 import MatchDetails from "./MatchDetails.svelte";
 import type {
 	Match_Team,
@@ -12,6 +12,15 @@ export let playerFullProfile: PlayerFullProfile;
 export let isLoading = false;
 export let loadingErrorMessage: string = "";
 export let hasError = false;
+
+type dumpStatus = {
+    success: boolean;
+    is_priority: boolean;
+    queue_position: number | null;
+    initially_dumped: boolean;
+    in_progress: boolean;
+    last_updated: number | null;
+}
 
 function toggleMatchDetails(match: {
 	expanded: any;
@@ -128,46 +137,75 @@ onDestroy(() => {
 	window.removeEventListener("playerDataUpdate", handlePlayerDataUpdate);
 });
 
+
+
+const dispatch = createEventDispatcher();
 async function refreshMatches() {
-	isRefreshing = true;
-	const lastRefreshTime = localStorage.getItem(
-		`lastRefresh_${playerFullProfile.id}`,
-	);
-	const currentTime = new Date().getTime();
+    if (!(await isRefreshAllowed())) {
+      console.log("Refresh not allowed: Player has not been initially dumped");
+      return;
+    }
 
-	if (
-		!lastRefreshTime ||
-		currentTime - Number.parseInt(lastRefreshTime) > 600000
-	) {
-		// Fetch matches from database
-		try {
-			const response = await fetch(
-				`https://wavescan-production.up.railway.app/api/v1/player/${playerFullProfile.id}/full_profile`,
-			);
-			if (!response.ok) throw new Error("Failed to fetch matches");
-			playerFullProfile = await response.json();
-			reactiveMatches = playerFullProfile.matches.map((match) => ({
-				...match,
-				expanded: false,
-				result:
-					match.winner === -1
-						? "Draw"
-						: match.winner === match.player_team?.team_index
-							? "Victory"
-							: "Defeat",
-			}));
-			localStorage.setItem(
-				`lastRefresh_${playerFullProfile.id}`,
-				currentTime.toString(),
-			);
-		} catch (error) {
-			console.error("Error fetching matches:", error);
-		}
+    isRefreshing = true;
+    try {
+      // Check dump status
+      const dumpStatusResponse = await fetch(`https://wavescan-production.up.railway.app/api/v1/player/${playerFullProfile.id}/dump_status`);
+      if (!dumpStatusResponse.ok) throw new Error("Failed to fetch dump status");
+      const dumpStatus = await dumpStatusResponse.json() as dumpStatus;
 
-		isRefreshing = false;
-	}
-	isRefreshing = false;
-}
+      const currentTime = new Date().getTime();
+      const lastRefreshTime = localStorage.getItem(`lastRefresh_${playerFullProfile.id}`);
+      const lastDumpTime = dumpStatus.initially_dumped ? (dumpStatus.last_updated ?? localStorage.getItem(`lastDump_${playerFullProfile.id}`) ? Number.parseInt(localStorage.getItem(`lastDump_${playerFullProfile.id}`) ?? "0") : 0) : null;
+
+      // Determine if we should refresh or dump
+      const shouldDump = !lastDumpTime || currentTime - lastDumpTime > 900000; // 15 minutes
+      const shouldRefresh = !lastRefreshTime || currentTime - Number.parseInt(lastRefreshTime) > 300000; // 5 minutes
+
+      if (shouldDump) {
+        // Initiate a new dump
+        const dumpResponse = await fetch(`https://wavescan-production.up.railway.app/api/v1/player/${playerFullProfile.id}/dump`);
+        if (!dumpResponse.ok) throw new Error("Failed to initiate dump");
+        localStorage.setItem(`lastDump_${playerFullProfile.id}`, currentTime.toString());
+        // You might want to handle the response here, e.g., show a message that dump is in progress
+      } else if (shouldRefresh) {
+        // Fetch full profile
+        const response = await fetch(`https://wavescan-production.up.railway.app/api/v1/player/${playerFullProfile.id}/full_profile`);
+        if (!response.ok) throw new Error("Failed to fetch matches");
+        playerFullProfile = await response.json();
+        reactiveMatches = playerFullProfile.matches.map((match) => ({
+          ...match,
+          expanded: false,
+          result:
+            match.winner === -1
+              ? "Draw"
+              : match.winner === match.player_team?.team_index
+                ? "Victory"
+                : "Defeat",
+        }));
+        localStorage.setItem(`lastRefresh_${playerFullProfile.id}`, currentTime.toString());
+      } else {
+        console.log("No refresh or dump needed at this time");
+      }
+    } catch (error) {
+      console.error("Error refreshing matches:", error);
+      // You might want to set an error state here to display to the user
+    } finally {
+      isRefreshing = false;
+    }
+  }
+
+// Function to check if refresh is allowed
+async function isRefreshAllowed() {
+    try {
+      const response = await fetch(`https://wavescan-production.up.railway.app/api/v1/player/${playerFullProfile.id}/dump_status`);
+      if (!response.ok) throw new Error('Failed to fetch dump status');
+      const dumpStatus = await response.json() as dumpStatus;
+      return dumpStatus.initially_dumped;
+    } catch (error) {
+      console.error('Error checking dump status:', error);
+      return false; // If there's an error, we'll disallow refresh to be safe
+    }
+  }
 
 async function addMatch() {
 	isAddingMatch = true;
@@ -234,9 +272,29 @@ function handlePlayerDataUpdate(event: CustomEvent) {
 	last20Winrate = updatedPlayerFullProfile.extended_stats?.last_20_matches_avg_stats?.average_win_percentage ?? 0;
 	last20Kd = (updatedPlayerFullProfile.extended_stats?.last_20_matches_avg_stats?.average_kills_per_round ?? 0) / (updatedPlayerFullProfile.extended_stats?.last_20_matches_avg_stats?.average_deaths_per_round ?? 1);
 	last20Adr = updatedPlayerFullProfile.extended_stats?.last_20_matches_avg_stats?.average_damage_per_round ?? 0;
+  isLoading = false;
 }
 </script>
-    
+{#if isLoading}
+<div class="bg-[#09090b] rounded-lg p-4">
+  <h2 class="text-2xl font-bold text-light-1 mb-4">Match History</h2>
+  <p class="text-light-2 mb-4">Currently fetching your player profile... If this takes longer than 10 seconds, please refresh the page or start tracking matches.</p>
+  <div class="space-y-2">
+    {#each Array(20) as _, i}
+      <div class="bg-[#131315] rounded-lg p-3 animate-pulse">
+        <div class="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+        <div class="h-4 bg-gray-300 rounded w-1/2"></div>
+      </div>
+    {/each}
+  </div>
+  <button class="mt-4 bg-accent text-dark-0 px-4 py-2 rounded-lg">Refresh Matches</button>
+</div>
+{:else if hasError}
+<div class="bg-[#09090b] rounded-lg p-4">
+  <h2 class="text-2xl font-bold text-light-1 mb-4">Match History</h2>
+  <p class="text-red-500">{errorMessage}</p>
+</div>
+{:else}
     <div class="last-20-stats bg-[#09090b] rounded-lg p-4 mb-4 border-[#131315] border-2">
         <div class="flex flex-col lg:flex-row w-full">
           <div class="flex-grow lg:w-3/4 mb-4 lg:mb-0 lg:mr-4">
@@ -295,22 +353,22 @@ function handlePlayerDataUpdate(event: CustomEvent) {
 
       <div class="flex justify-end space-x-2 mb-4">
         <button
-          on:click={refreshMatches}
-          class="px-4 py-2 bg-[#131315] text-[#f9c61f] rounded-md flex items-center border border-[#f9c61f] hover:bg-[#f9c61f] hover:text-[#131315] transition-colors duration-300"
-          disabled={isRefreshing}
-        >
-          {#if isRefreshing}
-            <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          {:else}
-            <svg class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
-            </svg>
-          {/if}
-          Refresh Matches
-        </button>
+        on:click={refreshMatches}
+        class="px-4 py-2 bg-[#131315] text-[#f9c61f] rounded-md flex items-center border border-[#f9c61f] hover:bg-[#f9c61f] hover:text-[#131315] transition-colors duration-300"
+        disabled={isRefreshing || !isRefreshAllowed()}
+      >
+        {#if isRefreshing}
+          <svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        {:else}
+          <svg class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+          </svg>
+        {/if}
+        Refresh Matches
+      </button>
         
         <button
           on:click={() => showAddMatchModal = true}
@@ -476,6 +534,7 @@ function handlePlayerDataUpdate(event: CustomEvent) {
     </div>
   {/each}
   </div>
+{/if}
 
 <style>
   /* Add any additional styles here */

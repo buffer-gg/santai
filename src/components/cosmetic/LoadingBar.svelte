@@ -2,11 +2,12 @@
   export let isLoading = false;
   export let hasError = false;
   export let errorMessage = "Failed to retrieve latest matches. Please try again later.";
+  export let loadingMessage = "Retrieving latest matches...";
 </script>
 
 <div class="my-5 flex flex-col items-center">
   {#if isLoading}
-    <p class="text-[#f9c61f] text-sm font-bold mb-2 text-center">Retrieving latest matches...</p>
+    <p class="text-[#f9c61f] text-sm font-bold mb-2 text-center">{loadingMessage}</p>
     <ul class="flex justify-center w-full max-w-[500px] h-[10px] p-0 list-none">
       <li class="w-[90px] h-[10px] mr-[10px] bg-[#f9c61f] bg-opacity-90 shadow-[inset_0px_0px_10px_2px_rgba(249,198,31,0.5),0px_0px_20px_rgba(249,198,31,0.5)]"></li>
       <li class="w-[90px] h-[10px] mr-[10px] bg-[#f9c61f] bg-opacity-90 shadow-[inset_0px_0px_10px_2px_rgba(249,198,31,0.5),0px_0px_20px_rgba(249,198,31,0.5)]"></li>

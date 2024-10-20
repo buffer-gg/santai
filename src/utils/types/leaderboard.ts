@@ -26,16 +26,25 @@ export const leaderboards = {
 
 		fetchData: async () => {
 			const res = await noStoreFetch(
-				"https://collective-production.up.railway.app/getLeaderboard/500/SOLO",
+				"https://wavescan-production.up.railway.app/api/v1/leaderboard/solo_ranked",
 			);
-			const data = await res.json();
-
-			const playerStats = (data as SoloPayload).map((d) => {
+			const data = await res.json() as {
+				leaderboard: {
+					id: string;
+					display_name: string;
+					current_solo_rank: number;
+					rank_rating: number;
+					rank: number;
+				}[];
+			};
+			console.log('easy', data)
+			const playerStats = data.leaderboard.map((d) => {
 				return {
-					username: d.SpectrePlayer.displayName,
+					username: d.display_name,
 					placement: d.rank,
-					soloRank: getSoloRankFromNumber(d.currentSoloRank),
-					playerId: d.SpectrePlayer.playerId,
+					soloRank: getSoloRankFromNumber(d.current_solo_rank),
+					playerId: d.id,
+					rating: d.rank_rating,
 				};
 			});
 			return playerStats as unknown as PlayerStats[];
