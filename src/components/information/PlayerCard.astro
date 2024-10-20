@@ -23,14 +23,14 @@ const adrChartData =
   player?.matches
     ?.map((match) => ({
       date: match.match_date,
-      adr: match.player_team?.players?.find((p) => p.id === player.id)?.damage_dealt / match.player_team?.rounds_played || 0,
+      adr: match.player_team?.players?.find((p) => p.id === player.id)?.damage_dealt ?? 0 / (match.player_team?.rounds_played ?? 1),
     }))
     .filter((data) => data.adr !== 0)
     .slice(-10)
     .reverse() || [];
 
 // Function to safely get Santai Rating
-function getSantaiRating(rankRating, currentSoloRank) {
+function getSantaiRating(rankRating: number, currentSoloRank: number) {
   if (typeof rankRating === "number" && typeof currentSoloRank === "number") {
     return Math.floor((rankRating + currentSoloRank * 100) / 25);
   }
@@ -133,7 +133,7 @@ function getRankName(rankId: number): string {
 			<h6 class="text-[#f9c61f] text-xs uppercase tracking-wider mb-1">Santai Rating</h6>
 			<div class="flex items-end justify-between">
 			  <h5 id="santai-rating" class="text-light-2 font-dharmagothic text-2xl font-bold tracking-wide">
-				{isLoading ? "..." : getSantaiRating(player?.stats?.rank_rating, player?.stats?.current_solo_rank)}
+				{isLoading ? "..." : getSantaiRating(player?.stats?.rank_rating ?? 0, player?.stats?.current_solo_rank ?? 0)}
 			  </h5>
 			</div>
 			<div class="w-full h-8 mt-2">
@@ -240,22 +240,22 @@ function getRankName(rankId: number): string {
 
   <script>
 	function initializePlayerCard() {
-		window.addEventListener('playerDataUpdate', (event) => {
+		window.addEventListener('playerDataUpdate', (event: any) => {
 		console.log("[PlayerCard] Player data updated", event);
 		updatePlayerCard(event.detail);
 	});
 	const playerCardContainer = document.getElementById('player-card-container');
 
-function updatePlayerCard(playerData) {
+function updatePlayerCard(playerData: any) {
     // Update relevant parts of the player card
-    const santaiRatingElement = playerCardContainer.querySelector('#santai-rating');
+    const santaiRatingElement = playerCardContainer?.querySelector('#santai-rating');
     if (santaiRatingElement) {
       santaiRatingElement.textContent = getSantaiRating(playerData.stats.rank_rating, playerData.stats.current_solo_rank).toString();
     } else {
       console.warn("[PlayerCard] No santai-rating element found");
     }
 
-    const adrElement = playerCardContainer.querySelector('#adr-value');
+    const adrElement = playerCardContainer?.querySelector('#adr-value');
     if (adrElement) {
       adrElement.textContent = playerData.extended_stats.season_stats['2024-S0'].average_damage_per_round.toFixed(1);
     } else {
@@ -263,7 +263,7 @@ function updatePlayerCard(playerData) {
     }
 
     // Update player name
-    const playerNameElement = playerCardContainer.querySelector('.text-5xl.text-light-1.font-dharmagothic.font-bold.mb-1.text-center');
+    const playerNameElement = playerCardContainer?.querySelector('.text-5xl.text-light-1.font-dharmagothic.font-bold.mb-1.text-center');
     if (playerNameElement) {
       playerNameElement.textContent = playerData.name;
     } else {
@@ -271,49 +271,49 @@ function updatePlayerCard(playerData) {
     }
 
     // Update player avatar
-    const playerAvatarElement = playerCardContainer.querySelector('#player-avatar-container');
+    const playerAvatarElement = playerCardContainer?.querySelector('#player-avatar-container');
     if (playerAvatarElement) {
       playerAvatarElement.innerHTML = `<img src="${playerData.steam_profile?.avatar?.large || "/images/avatars/default.png"}" alt="Player avatar" class="w-full h-full object-cover" />`;
     } else {
       console.warn("[PlayerCard] No player avatar element found");
     }
 
-	const rankIconElement = playerCardContainer.querySelector('#rank-icon');
-  if (rankIconElement) {
-    rankIconElement.src = `/images/solo-ranks/${getRankName(playerData.stats.current_solo_rank ?? 0).replace(' ', '-')}.png`;
-  } else {
-    console.warn("[PlayerCard] No rank-icon element found");
-  }
+	const rankIconElement = playerCardContainer?.querySelector('#rank-icon') as HTMLImageElement;
+	if (rankIconElement) {
+		rankIconElement.src = `/images/solo-ranks/${getRankName(playerData.stats.current_solo_rank ?? 0).replace(' ', '-')}.png`;
+	} else {
+		console.warn("[PlayerCard] No rank-icon element found");
+	}
 
-  const rankNameElement = playerCardContainer.querySelector('#rank-name');
+  const rankNameElement = playerCardContainer?.querySelector('#rank-name');
   if (rankNameElement) {
     rankNameElement.textContent = `Solo ${getRankName(playerData.stats.current_solo_rank ?? 0)}`;
   } else {
     console.warn("[PlayerCard] No rank-name element found");
   }
 
-  const winPercentageElement = playerCardContainer.querySelector('#win-percentage');
+  const winPercentageElement = playerCardContainer?.querySelector('#win-percentage');
   if (winPercentageElement) {
     winPercentageElement.textContent = playerData.extended_stats.season_stats['2024-S0'].average_win_percentage.toFixed(2) + '%';
   } else {
     console.warn("[PlayerCard] No win-percentage element found");
   }
 
-  const kdRatioElement = playerCardContainer.querySelector('#kd-ratio');
+  const kdRatioElement = playerCardContainer?.querySelector('#kd-ratio');
   if (kdRatioElement) {
     kdRatioElement.textContent = (playerData.extended_stats.season_stats['2024-S0'].total_kills / playerData.extended_stats.season_stats['2024-S0'].total_deaths).toFixed(2);
   } else {
     console.warn("[PlayerCard] No kd-ratio element found");
   }
 
-  const topDamageElement = playerCardContainer.querySelector('#top-damage');
+  const topDamageElement = playerCardContainer?.querySelector('#top-damage');
   if (topDamageElement) {
     topDamageElement.textContent = playerData.extended_stats.season_stats['2024-S0'].top_damage_dealt;
   } else {
     console.warn("[PlayerCard] No top-damage element found");
   }
 
-  const topKillsElement = playerCardContainer.querySelector('#top-kills');
+  const topKillsElement = playerCardContainer?.querySelector('#top-kills');
   if (topKillsElement) {
     topKillsElement.textContent = playerData.extended_stats.season_stats['2024-S0'].top_kills;
   } else {
@@ -321,7 +321,7 @@ function updatePlayerCard(playerData) {
   }
 
     // Update Santai Champion title
-	const santaiTitleElement = playerCardContainer.querySelector('#santai-title');
+	const santaiTitleElement = playerCardContainer?.querySelector('#santai-title');
   if (santaiTitleElement) {
     if (playerData.stats.current_solo_rank === 29 || playerData.stats.highest_team_rank === 29) {
       santaiTitleElement.textContent = "Santai Champion";
@@ -335,8 +335,8 @@ function updatePlayerCard(playerData) {
 
 
     // Remove loading classes
-    const loadingElements = playerCardContainer.querySelectorAll('.animate-pulse, .bg-gray-300');
-    loadingElements.forEach(element => {
+    const loadingElements = playerCardContainer?.querySelectorAll('.animate-pulse, .bg-gray-300');
+    loadingElements?.forEach((element: Element) => {
       element.classList.remove('animate-pulse', 'bg-gray-300');
     });
 

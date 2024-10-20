@@ -7,21 +7,44 @@ import SponsorStatsCard from "../../components/information/SponsorStatsCard.astr
 import MapStatsCard from "../../components/information/MapStatsCard.astro";
 import MatchHistory from "../../components/information/MatchHistory.svelte";
 import StatusContainer from "../../components/information/StatusContainer.svelte";
+import type { MapStats, PlayerFullProfile } from "../../utils/types/wavescan.types";
 
 const { slug } = Astro.params;
 const playerId = slug;
 
 // Initialize with skeleton data
-let playerFullProfile = {
-  id: playerId,
+let playerFullProfile: PlayerFullProfile = {
+  id: playerId ?? "",
   name: "Loading...",
   stats: {},
   extended_stats: {
     sponsor_stats: {},
     map_stats: {},
+    season_stats: {},
+    last_20_matches_avg_stats: {
+      total_kills: 0,
+      total_assists: 0,
+      total_deaths: 0,
+      total_damage_dealt: 0,
+      total_wins: 0,
+      total_losses: 0,
+      total_draws: 0,
+      total_rounds_played: 0,
+      average_assists_per_round: 0,
+      average_kills_per_round: 0,
+      average_deaths_per_round: 0,
+      average_damage_per_round: 0,
+      average_win_percentage: 0,
+      top_damage_dealt: 0,
+      top_kills: 0,
+      top_assists: 0,
+      top_deaths: 0,
+    },
   },
   matches: Array(20).fill({ match_date: new Date().toISOString(), player_team: { players: [{ id: playerId, ranked_rating: 0, damage_dealt: 0 }], rounds_played: 1 } }),
+  steam_profile: {},
 };
+
 
 let isLoading = true;
 let isPlayerNotFound = false;
@@ -36,8 +59,8 @@ let loadingErrorMessage = "Currently fetching your player profile... If this tak
       <div class="flex flex-col md:flex-row md:space-x-2">
         <div class="md:w-1/4 space-y-4 md:sticky md:top-4 md:self-start">
           <PlayerCard player={playerFullProfile} isLoading={isLoading} />
-          <SponsorStatsCard sponsorStats={playerFullProfile.extended_stats.sponsor_stats} isLoading={isLoading} />
-          <MapStatsCard mapStats={playerFullProfile.extended_stats.map_stats} isLoading={isLoading} />
+          <SponsorStatsCard sponsorStats={playerFullProfile?.extended_stats?.sponsor_stats ?? {}} />
+          <MapStatsCard mapStats={playerFullProfile?.extended_stats?.map_stats as { [key: string]: MapStats } ?? {}} />
         </div>
         <div class="md:w-3/4 mt-4 md:mt-0">
           <MatchHistory 
@@ -47,7 +70,7 @@ let loadingErrorMessage = "Currently fetching your player profile... If this tak
             hasError={isPlayerNotFound}
             errorMessage={loadingErrorMessage}
             on:dumpInitiated={() => {
-              document.querySelector('status-container')?.onDumpInitiated?.();
+              (document.querySelector('status-container') as any)?.onDumpInitiated?.();
             }}
           />
         </div>

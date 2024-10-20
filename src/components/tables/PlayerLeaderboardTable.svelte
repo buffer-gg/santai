@@ -1,9 +1,10 @@
 <script lang="ts">
-import { writable } from "svelte/store";
-import { createSvelteTable, getCoreRowModel } from "@tanstack/svelte-table";
-import type { ColumnDef, TableOptions } from "@tanstack/svelte-table";
-import SearchBar from "../navigation/SearchBar.svelte";
-import type PlayerStats from "../../utils/types/playerStats";
+  import { writable } from "svelte/store";
+  import { onMount } from "svelte";
+  import { createSvelteTable, getCoreRowModel, getFilteredRowModel } from "@tanstack/svelte-table";
+  import type { ColumnDef, TableOptions } from "@tanstack/svelte-table";
+  import SearchBar from "../navigation/SearchBar.svelte";
+  import type PlayerStats from "../../utils/types/playerStats";
 
   export let playerRows: PlayerStats[] = [];
   let displayedPlayerRows: PlayerStats[] = [];
@@ -20,11 +21,9 @@ import type PlayerStats from "../../utils/types/playerStats";
       }
     };
 
-onMount(() => {
-	window.addEventListener("scroll", handleInfiniteScroll);
-});
-
-const defaultData: PlayerStats[] = playerRows;
+    handleInfiniteScroll();
+    window.addEventListener("scroll", handleInfiniteScroll);
+  });
 
   const defaultColumns: ColumnDef<PlayerStats>[] = [
     {
@@ -50,18 +49,19 @@ const defaultData: PlayerStats[] = playerRows;
     },
   ];
 
-const options = writable<TableOptions<PlayerStats>>({
-	data: defaultData,
-	columns: defaultColumns,
-	getCoreRowModel: getCoreRowModel(),
-});
+  $: options = writable<TableOptions<PlayerStats>>({
+    data: displayedPlayerRows,
+    columns: defaultColumns,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  });
 
-let searchFilter = "";
-const table = createSvelteTable(options);
+  $: table = createSvelteTable(options);
 
-const handleKeyUp = (e: any) => {
-	$table.setGlobalFilter(String(e?.target?.value));
-};
+  $: searchFilter = "";
+  const handleKeyUp = (e: any) => {
+    $table.setGlobalFilter(String(e?.target?.value));
+  };
 </script>
 
 <div>

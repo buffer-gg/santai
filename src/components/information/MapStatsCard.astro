@@ -105,7 +105,7 @@ function updateMapStats(updatedPlayerFullProfile: any) {
   }
 }
 
-window.addEventListener('playerDataUpdate', (event: CustomEvent) => {
+window.addEventListener('playerDataUpdate', (event: any) => {
   console.log("[MapStatsCard] Player data updated", event);
   updateMapStats(event.detail);
 });
