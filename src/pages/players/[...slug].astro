@@ -80,7 +80,7 @@ window.addEventListener('load', fetchPlayerData);
     console.log("DOMContentLoaded for playerId:", playerId);
     
     // Socket.IO initialization
-    const socket = io('http://localhost:3004', {
+    const socket = io('https://arcsentry-production.up.railway.app', {
       query: { playerId }
     });
 
