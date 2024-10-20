@@ -37,7 +37,7 @@ export const leaderboards = {
 					rank: number;
 				}[];
 			};
-			console.log('easy', data)
+
 			const playerStats = data.leaderboard.map((d) => {
 				return {
 					username: d.display_name,
