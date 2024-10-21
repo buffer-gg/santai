@@ -177,56 +177,42 @@ function getRankName(rankId: number): string {
 			</div>
 			<div class="bg-[#131315] rounded-lg p-4">
 				<h6 class="text-[#f9c61f] text-sm uppercase tracking-wider mb-2">Season Stats</h6>
-				<div class="grid grid-cols-2 gap-4">
-				  <div class="flex flex-col items-center">
-					<svg class="w-6 h-6 text-light-2 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+				<div class="grid grid-cols-2 gap-2 sm:flex sm:flex-col sm:space-y-2">
+				  <div class="flex items-center">
+					<svg class="w-6 h-6 text-light-2 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 					  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
 					</svg>
-					<span id="win-percentage" class="text-light-1 font-bold text-sm" title="Win %">
-					  <span class="sm:hidden">
-						{player?.extended_stats?.season_stats?.['2024-S0']?.average_win_percentage 
-						  ? Math.round(player.extended_stats.season_stats['2024-S0'].average_win_percentage)
-						  : 0}%
-					  </span>
-					  <span class="hidden sm:inline">
-						{player?.extended_stats?.season_stats?.['2024-S0']?.average_win_percentage 
-						  ? player.extended_stats.season_stats['2024-S0'].average_win_percentage.toFixed(2)
-						  : 0}%
-					  </span>
+					<span class="text-light-2 text-xs w-20 hidden sm:inline">Win %:</span>
+					<span id="win-percentage" class="text-light-1 font-bold text-sm">
+					  {player?.extended_stats?.season_stats?.['2024-S0']?.average_win_percentage 
+						? player.extended_stats.season_stats['2024-S0'].average_win_percentage.toFixed(1)
+						: 0}%
 					</span>
 				  </div>
-				  <div class="flex flex-col items-center">
-					<svg class="w-6 h-6 text-light-2 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+				  <div class="flex items-center">
+					<svg class="w-6 h-6 text-light-2 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 					  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
 					</svg>
-					<span id="kd-ratio" class="text-light-1 font-bold text-sm" title="K/D Ratio">
-					  <span class="sm:hidden">
-						{(player?.extended_stats?.season_stats?.['2024-S0']?.total_kills && player?.extended_stats?.season_stats?.['2024-S0']?.total_deaths) 
-						  ? Math.round((player.extended_stats.season_stats['2024-S0'].total_kills / player.extended_stats.season_stats['2024-S0'].total_deaths))
-						  : 0}
-					  </span>
-					  <span class="hidden sm:inline">
-						{(player?.extended_stats?.season_stats?.['2024-S0']?.total_kills && player?.extended_stats?.season_stats?.['2024-S0']?.total_deaths) 
-						  ? (player.extended_stats.season_stats['2024-S0'].total_kills / player.extended_stats.season_stats['2024-S0'].total_deaths).toFixed(2)
-						  : 0}
-					  </span>
+					<span class="text-light-2 text-xs w-20 hidden sm:inline">KDR:</span>
+					<span id="kd-ratio" class="text-light-1 font-bold text-sm">
+					  {(player?.extended_stats?.season_stats?.['2024-S0']?.total_kills && player?.extended_stats?.season_stats?.['2024-S0']?.total_deaths) 
+						? (player.extended_stats.season_stats['2024-S0'].total_kills / player.extended_stats.season_stats['2024-S0'].total_deaths).toFixed(2)
+						: 0}
 					</span>
 				  </div>
-				  <div class="flex flex-col items-center">
-					<svg class="w-6 h-6 text-light-2 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-					  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-					</svg>
-					<span id="top-damage" class="text-light-1 font-bold text-sm" title="Top Damage">
+				  <div class="flex items-center">
+					<svg class="w-6 h-6 text-light-2 mr-2" viewBox="0 0 512 512" xml:space="preserve" fill="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css">  .st0{fill:#ffffff;}  </style> <g> <path class="st0" d="M495.212,16.785c-44.125-44.141-188.297,5.875-250.078,67.656S61.79,267.8,61.79,267.8l182.406,182.407 c0,0,121.563-121.579,183.359-183.36C489.321,205.082,539.337,60.91,495.212,16.785z"></path> <polygon class="st0" points="0.009,329.597 182.399,512.004 217.712,476.691 35.306,294.285 "></polygon> </g> </g></svg>
+					<span class="text-light-2 text-xs w-20 hidden sm:inline">Top DMG:</span>
+					<span id="top-damage" class="text-light-1 font-bold text-sm">
 					  {player?.extended_stats?.season_stats?.['2024-S0']?.top_damage_dealt 
 						? player.extended_stats.season_stats['2024-S0'].top_damage_dealt 
 						: 0}
 					</span>
 				  </div>
-				  <div class="flex flex-col items-center">
-					<svg class="w-6 h-6 text-light-2 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-					  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-					</svg>
-					<span id="top-kills" class="text-light-1 font-bold text-sm" title="Top Kills">
+				  <div class="flex items-center">
+					<svg class="w-6 h-6 text-light-2 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M5 16.6573C3.7492 15.1116 3 13.1433 3 11C3 6.02944 7.02944 3 12 3C16.9706 3 21 6.02944 21 11C21 13.1433 20.2508 15.1116 19 16.6573M5 16.6573V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V16.6573M5 16.6573H6.5M19 16.6573H17.5" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><circle cx="8" cy="12" r="1" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle><path d="M11 16L12 14L13 16H11Z" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M9 19V21" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M12 19V21" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M15 19V21" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><circle cx="16" cy="12" r="1" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle></g></svg>
+					<span class="text-light-2 text-xs w-20 hidden sm:inline">Top Kills:</span>
+					<span id="top-kills" class="text-light-1 font-bold text-sm">
 					  {player?.extended_stats?.season_stats?.['2024-S0']?.top_kills 
 						? player.extended_stats.season_stats['2024-S0'].top_kills 
 						: 0}
@@ -294,7 +280,7 @@ function updatePlayerCard(playerData: any) {
 
   const winPercentageElement = playerCardContainer?.querySelector('#win-percentage');
   if (winPercentageElement) {
-    winPercentageElement.textContent = playerData.extended_stats.season_stats['2024-S0'].average_win_percentage.toFixed(2) + '%';
+    winPercentageElement.textContent = playerData.extended_stats.season_stats['2024-S0'].average_win_percentage.toFixed(1) + '%';
   } else {
     console.warn("[PlayerCard] No win-percentage element found");
   }

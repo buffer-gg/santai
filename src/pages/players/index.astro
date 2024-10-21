@@ -25,7 +25,7 @@ const leaderboard = await fetchLeaderboard("season0" as LeaderboardId);
           </div>
           <Image src={soloRank} alt="Spectre Divide solo rank icon." class="w-24" />
         </div>
-        <Note type={InfoType.Warning} body="Santai.GG is work in progress." class="mt-large md:mt-0 md:ml-auto" />
+        <Note type={InfoType.Warning} body="The leaderboard is currently being populated. Please check back later for more accurate rankings." class="mt-large md:mt-0 md:ml-auto" />
       </div>
 
       <PlayerLeaderboardTable client:idle playerRows={leaderboard} />
