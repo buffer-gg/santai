@@ -274,6 +274,21 @@ function handlePlayerDataUpdate(event: CustomEvent) {
 	last20Adr = updatedPlayerFullProfile.extended_stats?.last_20_matches_avg_stats?.average_damage_per_round ?? 0;
   isLoading = false;
 }
+
+function getMatchQueueName(queueName: string, used_team_rank: boolean) {
+  const lowerCaseQueueName = queueName.toLowerCase();
+  switch (lowerCaseQueueName) {
+    case "standard_ranked":
+      if (used_team_rank) {
+        return "Team Ranked";
+      }
+      return "Solo Ranked";
+    case "standard_casual":
+      return "Casual";
+    default:
+      return queueName;
+  }
+}
 </script>
 {#if isLoading}
 <div class="bg-[#09090b] rounded-lg p-4">
@@ -494,7 +509,7 @@ function handlePlayerDataUpdate(event: CustomEvent) {
                 <span class="text-xs opacity-50">•</span>
                 <span class={`font-medium text-xs ${match?.player_team?.players?.find(player => player.id === playerFullProfile?.id)?.ranked_rating_delta >= 0 ? 'text-green-500' : 'text-red-500'}`}>{match?.player_team?.players?.find(player => player.id === playerFullProfile?.id)?.ranked_rating_delta ? match?.player_team?.players?.find(player => player.id === playerFullProfile?.id)?.ranked_rating_delta > 0 ? `+${match?.player_team?.players?.find(player => player.id === playerFullProfile?.id)?.ranked_rating_delta}` : `${match?.player_team?.players?.find(player => player.id === playerFullProfile?.id)?.ranked_rating_delta}` : ''}</span>
                 <span class="text-xs opacity-50">•</span>
-                <span class="text-xs">{match.queue_name}</span>
+                <span class="text-xs">{getMatchQueueName(match?.queue_name ?? '', match?.player_team?.used_team_rank ?? false)}</span>
                 <span class="text-xs opacity-50">•</span>
                 <span class="text-xs">{getDate(match.match_date)}</span>
               </h5>
