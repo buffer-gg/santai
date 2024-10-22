@@ -12,7 +12,12 @@ import vercel from "@astrojs/vercel/serverless";
 export default defineConfig({
 	integrations: [tailwind(), svelte(), react()],
 	output: "hybrid",
-	adapter: vercel(),
+	adapter: vercel({
+		isr: {
+			expiration: 60 * 15, // 15 minutes
+			exclude: ["/players/[...slug]"]
+		}
+	}),
 	redirects: {
 		"/leaderboard": "/players",
 	},
