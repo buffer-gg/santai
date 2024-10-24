@@ -17,12 +17,9 @@ export default defineConfig({
 			expiration: 60 * 15, // 15 minutes
 			exclude: ["/players/[...slug]"]
 		},
-		webAnalytics: { enabled: true }
+		// webAnalytics: { enabled: true }
 	}),
 	redirects: {
-		"/leaderboard": "/maintenance",
-		"/": "/maintenance",
-		"/players": "/maintenance",
-		"/players/[...slug]": "/maintenance"
+		"/leaderboard": "/players",
 	},
 });
