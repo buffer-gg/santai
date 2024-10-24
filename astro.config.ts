@@ -16,7 +16,8 @@ export default defineConfig({
 		isr: {
 			expiration: 60 * 15, // 15 minutes
 			exclude: ["/players/[...slug]"]
-		}
+		},
+		webAnalytics: { enabled: true }
 	}),
 	redirects: {
 		"/leaderboard": "/players",
