@@ -10,19 +10,20 @@
   let displayedPlayerRows: PlayerStats[] = [];
 
   onMount(() => {
-    const handleInfiniteScroll = () => {
-      const endOfPage = window.innerHeight + Math.round(window.scrollY) >= document.body.offsetHeight;
+    // const handleInfiniteScroll = () => {
+    //   const endOfPage = window.innerHeight + Math.round(window.scrollY) >= document.body.offsetHeight;
 
-      if (endOfPage) {
-        for (let i = 0; i < 20; i++) {
-          displayedPlayerRows = [...displayedPlayerRows, playerRows[0]];
-          playerRows.shift();
-        }
-      }
-    };
+    //   if (endOfPage) {
+    //     for (let i = 0; i < 20; i++) {
+    //       displayedPlayerRows = [...displayedPlayerRows, playerRows[0]];
+    //       playerRows.shift();
+    //     }
+    //   }
+    // };
 
-    handleInfiniteScroll();
-    window.addEventListener("scroll", handleInfiniteScroll);
+    // handleInfiniteScroll();
+    // window.addEventListener("scroll", handleInfiniteScroll);
+    displayedPlayerRows = playerRows;
   });
 
   const defaultColumns: ColumnDef<PlayerStats>[] = [
