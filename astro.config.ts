@@ -20,6 +20,9 @@ export default defineConfig({
 		webAnalytics: { enabled: true }
 	}),
 	redirects: {
-		"/leaderboard": "/players",
+		"/leaderboard": "/maintenance",
+		"/": "/maintenance",
+		"/players": "/maintenance",
+		"/players/[...slug]": "/maintenance"
 	},
 });
